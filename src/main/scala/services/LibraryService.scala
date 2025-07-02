@@ -1,7 +1,8 @@
 package services
 
 import models.*
-import utils.ErrorHandling.*
+import utils.LibraryError.*
+import utils.LibraryError
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -9,6 +10,7 @@ import java.util.UUID
  * Service principal pour la gestion de la bibliothèque
  */
 class LibraryService(private var catalog: Catalog = Catalog.empty) {
+  type LibraryResult[A] = Either[LibraryError, A]
   
   // Gestion des livres
   def addBook(book: Book): LibraryResult[Unit] = {
