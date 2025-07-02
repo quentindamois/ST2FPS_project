@@ -29,7 +29,7 @@ class BookSpec extends AnyFunSuite with Matchers {
     "un livre sans exemplaire disponible ne devrait pas permettre l'emprunt"
   ) {
     val book = Book(
-      id = "1",
+      id = "2",
       title = "Test Book",
       author = "Test Author",
       isbn = "978-0-123456-78-9",
@@ -47,7 +47,7 @@ class BookSpec extends AnyFunSuite with Matchers {
 
   test("le retour d'un livre devrait augmenter les exemplaires disponibles") {
     val book = Book(
-      id = "1",
+      id = "3",
       title = "Test Book",
       author = "Test Author",
       isbn = "978-0-123456-78-9",
