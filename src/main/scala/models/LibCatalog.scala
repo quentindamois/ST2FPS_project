@@ -6,7 +6,7 @@ import io.circe.generic.semiauto.*
 /**
  * Représente le catalogue de la bibliothèque
  */
-case class Catalog(
+case class  LibCatalog(
   books: Map[String, Book] = Map.empty,
   users: Map[String, User] = Map.empty,
   transactions: List[Transaction] = List.empty

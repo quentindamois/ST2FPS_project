@@ -1,41 +1,30 @@
 package models
 
-import java.time.LocalDate
 import io.circe.{Decoder, Encoder}
-import io.circe.generic.semiauto.*
+import io.circe.generic.semiauto._
 
 /**
  * Représente un livre dans la bibliothèque
  */
 case class Book(
-  id: String,
-  title: String,
-  author: String,
-  isbn: String,
-  publishedDate: LocalDate,
-  genre: String,
-  totalCopies: Int,
-  availableCopies: Int,
-  description: Option[String] = None
+    id: String,
+    isbn: String,
+    title: String,
+    authors: List[String],
+    publishYear: Int,
+    genre: String,
+    availabilityStatus: Int // ou availableCopies
 ) {
-  def isAvailable: Boolean = availableCopies > 0
-  
-  def borrowCopy: Either[String, Book] = {
-    if (availableCopies > 0) {
-      Right(this.copy(availableCopies = availableCopies - 1))
-    } else {
-      Left("Aucun exemplaire disponible")
+    def isAvailable: Boolean = availabilityStatus > 0
+    
+    def borrowCopy: Either[String, Book] = {
+        if (availabilityStatus > 0) {
+            Right(this.copy(availabilityStatus = availabilityStatus - 1))
+            } else {
+                Left("Aucun exemplaire disponible")
+            }
+        }
     }
-  }
-  
-  def returnCopy: Either[String, Book] = {
-    if (availableCopies < totalCopies) {
-      Right(this.copy(availableCopies = availableCopies + 1))
-    } else {
-      Left("Tous les exemplaires sont déjà retournés")
-    }
-  }
-}
 
 object Book {
   given Encoder[Book] = deriveEncoder
