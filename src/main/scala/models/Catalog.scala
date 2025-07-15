@@ -2,21 +2,22 @@ package models
 
 import io.circe.{Decoder, Encoder}
 import io.circe.generic.semiauto.*
+import upickle.default.*
 
 /**
  * Représente le catalogue de la bibliothèque
  */
-case class Catalog(
+case class LibCatalog (
   books: Map[String, Book] = Map.empty,
   users: Map[String, User] = Map.empty,
   transactions: List[Transaction] = List.empty
-) {
+) derives ReadWriter {
   // Opérations sur les livres
-  def addBook(book: Book): Catalog = {
+  def addBook(book: Book): LibCatalog = {
     this.copy(books = books + (book.id -> book))
   }
   
-  def removeBook(bookId: String): Catalog = {
+  def removeBook(bookId: String): LibCatalog = {
     this.copy(books = books - bookId)
   }
   
@@ -35,18 +36,18 @@ case class Catalog(
   }
   
   // Opérations sur les utilisateurs
-  def addUser(user: User): Catalog = {
+  def addUser(user: User): LibCatalog = {
     this.copy(users = users + (user.id -> user))
   }
   
-  def removeUser(userId: String): Catalog = {
+  def removeUser(userId: String): LibCatalog = {
     this.copy(users = users - userId)
   }
   
   def getUser(userId: String): Option[User] = users.get(userId)
   
   // Opérations sur les transactions
-  def addTransaction(transaction: Transaction): Catalog = {
+  def addTransaction(transaction: Transaction): LibCatalog = {
     this.copy(transactions = transaction :: transactions)
   }
   
@@ -72,8 +73,8 @@ case class Catalog(
 }
 
 object Catalog {
-  given Encoder[Catalog] = deriveEncoder
-  given Decoder[Catalog] = deriveDecoder
+  given Encoder[LibCatalog] = deriveEncoder
+  given Decoder[LibCatalog] = deriveDecoder
   
-  def empty: Catalog = Catalog()
+  def empty: LibCatalog = LibCatalog()
 }

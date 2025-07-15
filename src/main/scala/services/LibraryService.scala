@@ -8,7 +8,7 @@ import java.util.UUID
 /**
  * Service principal pour la gestion de la bibliothèque
  */
-class LibraryService(private var catalog: Catalog = Catalog.empty) {
+class LibraryService(private var catalog: LibCatalog = Catalog.empty) {
   
   // Gestion des livres
   def addBook(book: Book): LibraryResult[Unit] = {
