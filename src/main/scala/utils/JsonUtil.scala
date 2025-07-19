@@ -3,7 +3,7 @@ import models.LibCatalog
 import utils.ErrorHandling.*
 import upickle.default.*
 import utils.ErrorHandling.FileError.ConversionError
-
+import utils.CustomTypes._
 import java.time.{LocalDate, LocalDateTime}
 import java.io.{File, FileNotFoundException, FileWriter}
 import java.time.format.DateTimeFormatter

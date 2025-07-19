@@ -4,6 +4,7 @@ import models.*
 import java.time.LocalDateTime
 import java.util.UUID
 import utils.ErrorHandling._
+import utils.CustomTypes._
 
 /** Service principal pour la gestion de la bibliothèque Implémentation
   * immutable conforme aux principes de la programmation fonctionnelle

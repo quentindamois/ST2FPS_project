@@ -6,7 +6,6 @@ import models.*
   * principes de la programmation fonctionnelle
   */
 case class RecommendationService(libraryService: LibraryService) {
-
   def recommendBooksByGenre(userId: String, limit: Int = 5): List[Book] = {
     val userBorrowHistory = getUserBorrowHistory(userId)
     val preferredGenres = getPreferredGenres(userBorrowHistory)
