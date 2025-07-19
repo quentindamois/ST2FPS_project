@@ -44,6 +44,7 @@ object JsonUtil {
     * @param pathToFile a String corresponding the path to the file from where we are loading the library
     * @return an Either[String, libCatalog] hat contain on the left a message about the error encountered and on the right the LibCatalog successfully loaded
     **/
+  def LoadFromFile(pathToFile: String): fileOperationOutput[LibCatalog] = {
     safeFileOpening(pathToFile).flatMap(safeFileReading).flatMap(safeJsonConvertingToLib) match {
       case Left(errorOperation) if  errorOperation == ConversionError => Left("the library could not be converted in Json.")
       case Left(errorOperation) if errorOperation == PathError => Left(s"$pathToFile does not exist")
