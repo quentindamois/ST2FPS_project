@@ -62,7 +62,7 @@ object Main extends App {
     books.foreach { book =>
       libraryService.addBook(book) match {
         case Right(_)    => println(s"✓ Livre ajouté: ${book.title}")
-        case Left(error) => println(s"✗ Erreur: ${error.message}")
+        case Left(error) => println() //println(s"✗ Erreur: ${error.message}")
       }
     }
 
@@ -92,7 +92,7 @@ object Main extends App {
     users.foreach { user =>
       libraryService.addUser(user) match {
         case Right(_)    => println(s"✓ Utilisateur ajouté: ${user.fullName}")
-        case Left(error) => println(s"✗ Erreur: ${error.message}")
+        case Left(error) => println()//println(s"✗ Erreur: ${error.message}")
       }
     }
 
@@ -104,14 +104,14 @@ object Main extends App {
         println(
           s"Livres trouvés avec 'Prince': ${foundBooks.map(_.title).mkString(", ")}"
         )
-      case Left(error) => println(s"Erreur de recherche: ${error.message}")
+      case Left(error) => println() //println(s"Erreur de recherche: ${error.message}")
     }
 
     // Recherche par auteur
     libraryService.searchBooks("Orwell", SearchType.Author) match {
       case Right(foundBooks) =>
         println(s"Livres de Orwell: ${foundBooks.map(_.title).mkString(", ")}")
-      case Left(error) => println(s"Erreur de recherche: ${error.message}")
+      case Left(error) => println()//println(s"Erreur de recherche: ${error.message}")
     }
 
     println("\n--- Opérations d'emprunt ---")
@@ -130,7 +130,7 @@ object Main extends App {
             s"  Date d'échéance: ${transaction.dueDate.getOrElse("Non définie")}"
           )
         case Left(error) =>
-          println(s"✗ Erreur d'emprunt: ${error.message}")
+          println()//println(s"✗ Erreur d'emprunt: ${error.message}")
       }
 
       // Affichage des livres empruntés par l'utilisateur
@@ -140,7 +140,7 @@ object Main extends App {
             println(s"Livres empruntés par ${firstUser.fullName}:")
             borrowedBooks.foreach(book => println(s"  - ${book.title}"))
           }
-        case Left(error) => println(s"Erreur: ${error.message}")
+        case Left(error) => println()//println(s"Erreur: ${error.message}")
       }
     }
 
