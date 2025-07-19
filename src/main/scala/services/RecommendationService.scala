@@ -2,9 +2,10 @@ package services
 
 import models.*
 
-/** Service de recommandation de livres
+/** Service de recommandation de livres Implémentation immutable conforme aux
+  * principes de la programmation fonctionnelle
   */
-class RecommendationService(libraryService: LibraryService) {
+case class RecommendationService(libraryService: LibraryService) {
 
   def recommendBooksByGenre(userId: String, limit: Int = 5): List[Book] = {
     val userBorrowHistory = getUserBorrowHistory(userId)

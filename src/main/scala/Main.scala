@@ -1,24 +1,29 @@
+package main
+
 import models.*
 import services.*
 import utils.JsonUtil
 import java.time.LocalDate
 import java.util.UUID
 
-/** Application principale du système de gestion de bibliothèque
+/** Application principale du système de gestion de bibliothèque Implémentation
+  * conforme aux principes de la programmation fonctionnelle
   */
 object Main extends App {
 
-  println("=== Système de Gestion de Bibliothèque ===")
-  println("Bienvenue dans le système de gestion de bibliothèque ST2FPS!")
+  println("=== Systeme de Gestion de Bibliotheque ===")
+  println("Bienvenue dans le systeme de gestion de bibliotheque ST2FPS!")
 
-  // Initialisation du service
-  val libraryService = new LibraryService()
-  val recommendationService = new RecommendationService(libraryService)
+  // Initialisation des services (immutables)
+  val initialLibraryService = LibraryService()
+  val initialRecommendationService = RecommendationService(
+    initialLibraryService
+  )
 
   // Démonstration du système
-  runDemo()
+  runDemo(initialLibraryService)
 
-  def runDemo(): Unit = {
+  def runDemo(libraryService: LibraryService): Unit = {
     println("\n--- Ajout de livres au catalogue ---")
 
     // Création de quelques livres d'exemple
@@ -58,11 +63,15 @@ object Main extends App {
       )
     )
 
-    // Ajout des livres
-    books.foreach { book =>
-      libraryService.addBook(book) match {
-        case Right(_)    => println(s"✓ Livre ajouté: ${book.title}")
-        case Left(error) => println() //println(s"✗ Erreur: ${error.message}")
+    // Ajout des livres avec gestion immutable
+    val serviceWithBooks = books.foldLeft(libraryService) { (service, book) =>
+      service.addBook(book) match {
+        case Right(updatedService) =>
+          println(s"[OK] Livre ajoute: ${book.title}")
+          updatedService
+        case Left(error) =>
+          println(s"[ERREUR] Erreur: ${error.message}")
+          service
       }
     }
 
@@ -88,99 +97,100 @@ object Main extends App {
       )
     )
 
-    // Ajout des utilisateurs
-    users.foreach { user =>
-      libraryService.addUser(user) match {
-        case Right(_)    => println(s"✓ Utilisateur ajouté: ${user.fullName}")
-        case Left(error) => println()//println(s"✗ Erreur: ${error.message}")
+    // Ajout des utilisateurs avec gestion immutable
+    val serviceWithUsers = users.foldLeft(serviceWithBooks) { (service, user) =>
+      service.addUser(user) match {
+        case Right(updatedService) =>
+          println(s"[OK] Utilisateur ajoute: ${user.fullName}")
+          updatedService
+        case Left(error) =>
+          println(s"[ERREUR] Erreur: ${error.message}")
+          service
       }
     }
 
     println("\n--- Recherche de livres ---")
 
     // Recherche par titre
-    libraryService.searchBooks("Prince", SearchType.Title) match {
+    serviceWithUsers.searchBooks("Prince", SearchType.Title) match {
       case Right(foundBooks) =>
         println(
-          s"Livres trouvés avec 'Prince': ${foundBooks.map(_.title).mkString(", ")}"
+          s"Livres trouves avec 'Prince': ${foundBooks.map(_.title).mkString(", ")}"
         )
       case Left(error) => println() //println(s"Erreur de recherche: ${error.message}")
     }
 
     // Recherche par auteur
-    libraryService.searchBooks("Orwell", SearchType.Author) match {
+    serviceWithUsers.searchBooks("Orwell", SearchType.Author) match {
       case Right(foundBooks) =>
         println(s"Livres de Orwell: ${foundBooks.map(_.title).mkString(", ")}")
       case Left(error) => println()//println(s"Erreur de recherche: ${error.message}")
     }
 
-    println("\n--- Opérations d'emprunt ---")
+    println("\n--- Operations d'emprunt ---")
 
-    val catalog = libraryService.getCatalog
+    val catalog = serviceWithUsers.getCatalog
     if (catalog.books.nonEmpty && catalog.users.nonEmpty) {
       val firstBook = catalog.books.values.head
       val firstUser = catalog.users.values.head
 
-      // Emprunt d'un livre
-      libraryService.borrowBook(firstUser.id, firstBook.id) match {
-        case Right(transaction) =>
-          println(s"✓ ${firstUser.fullName} a emprunté '${firstBook.title}'")
+      // Emprunt d'un livre avec gestion immutable
+      serviceWithUsers.borrowBook(firstUser.id, firstBook.id) match {
+        case Right((updatedService, transaction)) =>
+          println(s"[OK] ${firstUser.fullName} a emprunte '${firstBook.title}'")
           println(s"  Transaction ID: ${transaction.id}")
           println(
-            s"  Date d'échéance: ${transaction.dueDate.getOrElse("Non définie")}"
+            s"  Date d'echeance: ${transaction.dueDate.getOrElse("Non definie")}"
           )
-        case Left(error) =>
-          println()//println(s"✗ Erreur d'emprunt: ${error.message}")
-      }
 
-      // Affichage des livres empruntés par l'utilisateur
-      libraryService.getUserBorrowedBooks(firstUser.id) match {
-        case Right(borrowedBooks) =>
-          if (borrowedBooks.nonEmpty) {
-            println(s"Livres empruntés par ${firstUser.fullName}:")
-            borrowedBooks.foreach(book => println(s"  - ${book.title}"))
+          // Affichage des livres empruntés par l'utilisateur
+          updatedService.getUserBorrowedBooks(firstUser.id) match {
+            case Right(borrowedBooks) =>
+              if (borrowedBooks.nonEmpty) {
+                println(s"Livres empruntes par ${firstUser.fullName}:")
+                borrowedBooks.foreach(book => println(s"  - ${book.title}"))
+              }
+            case Left(error) => println(s"Erreur: ${error.message}")
           }
-        case Left(error) => println()//println(s"Erreur: ${error.message}")
-      }
-    }
 
-    println("\n--- Recommandations ---")
+          // Recommandations avec le service mis à jour
+          val recommendationService = RecommendationService(updatedService)
+          val recommendations =
+            recommendationService.recommendBooksByGenre(firstUser.id, 3)
 
-    if (catalog.users.nonEmpty) {
-      val firstUser = catalog.users.values.head
-      val recommendations =
-        recommendationService.recommendBooksByGenre(firstUser.id, 3)
+          if (recommendations.nonEmpty) {
+            println(s"Recommandations pour ${firstUser.fullName}:")
+            recommendations.foreach(book =>
+              println(s"  - ${book.title} (${book.genre})")
+            )
+          } else {
+            println("Aucune recommandation disponible pour le moment.")
+          }
 
-      if (recommendations.nonEmpty) {
-        println(s"Recommandations pour ${firstUser.fullName}:")
-        recommendations.foreach(book =>
-          println(s"  - ${book.title} (${book.genre})")
-        )
-      } else {
-        println("Aucune recommandation disponible pour le moment.")
+        case Left(error) =>
+          println(s"[ERREUR] Erreur d'emprunt: ${error.message}")
       }
     }
 
     println("\n--- Sauvegarde du catalogue ---")
 
-    // Création du dossier data s'il n'existe pas
-    val dataDir = new java.io.File("data")
-    if (!dataDir.exists()) {
-      dataDir.mkdirs()
-    }
-
     // Sauvegarde en JSON
-    JsonUtil.saveToFile(catalog, "data/catalog.json") match {
-      case Right(_) => println("✓ Catalogue sauvegardé dans data/catalog.json")
-      case Left(error) => println(s"✗ Erreur de sauvegarde: $error")
+    JsonUtil.saveToFile(
+      serviceWithUsers.getCatalog,
+      "data/catalog.json"
+    ) match {
+      case Right(_) =>
+        println("[OK] Catalogue sauvegarde dans data/catalog.json")
+      case Left(error) => println(s"[ERREUR] Erreur de sauvegarde: $error")
     }
 
+    val finalCatalog = serviceWithUsers.getCatalog
     println("\n--- Statistiques ---")
-    println(s"Total des livres: ${catalog.totalBooks}")
-    println(s"Total des utilisateurs: ${catalog.totalUsers}")
-    println(s"Total des transactions: ${catalog.totalTransactions}")
-    println(s"Livres disponibles: ${catalog.availableBooks.length}")
+    println(s"Total des livres: ${finalCatalog.totalBooks}")
+    println(s"Total des utilisateurs: ${finalCatalog.totalUsers}")
+    println(s"Total des transactions: ${finalCatalog.totalTransactions}")
+    println(s"Livres disponibles: ${finalCatalog.availableBooks.length}")
 
-    println("\n=== Fin de la démonstration ===")
+    println("\n=== Fin de la demonstration ===")
   }
 }
