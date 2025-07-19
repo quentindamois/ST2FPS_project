@@ -12,12 +12,8 @@ enum FileError():
   
 
 //The type for the type of the output for each function
-type ResultFile = Either[FileError, String]
-type GettingLibrary = Either[FileError, LibCatalog]
-type LibToJsonConvert = Either[FileError, String]
-type ResultFileOperation = Either[String, String]
-type LoadingLibrary = Either[String, LibCatalog]
-
+type fileOperationInnerResult[A] = Either[FileError, A]
+type fileOperationOutput[A] = Either[String, A]
 
 object JsonUtil {
   /** 
