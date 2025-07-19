@@ -130,4 +130,23 @@ object JsonUtil {
       case _ => Left(FileError.ConversionError)
     }
   }
+  //based on https://github.com/com-lihaoyi/upickle/issues/260
+
+
+  /**
+   * This is a custom Picklers for the type LocalDate
+   * */
+  implicit val ReaderWriterLocalDate: ReadWriter[LocalDate] = upickle.default.readwriter[String].bimap(
+    locDate => locDate.format(DateTimeFormatter.ISO_LOCAL_DATE),
+    strLocalDate => LocalDate.parse(strLocalDate)
+  )
+
+  /**
+    * This is the custom picklers for the type Local Date Time
+    */
+  implicit val ReaderWriterLocalDateTime: ReadWriter[LocalDateTime] = upickle.default.readwriter[String].bimap(
+    locDateTime => locDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
+    strLocalDate => LocalDateTime.parse(strLocalDate)
+  )
+
 }
