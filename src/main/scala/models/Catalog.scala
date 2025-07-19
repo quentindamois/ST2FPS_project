@@ -2,7 +2,8 @@ package models
 
 import io.circe.{Decoder, Encoder}
 import io.circe.generic.semiauto.*
-import upickle.default.*
+import upickle.default._
+
 
 /**
  * Représente le catalogue de la bibliothèque
