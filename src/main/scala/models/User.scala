@@ -3,6 +3,8 @@ package models
 import java.time.LocalDate
 import io.circe.{Decoder, Encoder}
 import io.circe.generic.semiauto.*
+import upickle.default._
+import utils.JsonUtil.ReaderWriterLocalDate
 
 /**
  * Représente un utilisateur de la bibliothèque
@@ -16,7 +18,7 @@ case class User(
   userType: UserType,
   borrowedBooks: List[String] = List.empty,
   maxBorrowLimit: Int = 5
-) {
+) derives ReadWriter {
   def fullName: String = s"$firstName $lastName"
   
   def canBorrow: Boolean = borrowedBooks.length < maxBorrowLimit
@@ -40,7 +42,7 @@ case class User(
   }
 }
 
-enum UserType {
+enum UserType derives ReadWriter {
   case Student, Faculty, External
 }
 
