@@ -1,9 +1,22 @@
 package services
 
 import models.*
-import utils.ErrorHandling.*
 import java.time.LocalDateTime
 import java.util.UUID
+
+enum LibraryError:
+  case BookAlreadyExists(id: String)
+  case UserAlreadyExists(id: String)
+  case UserNotFound(id: String)
+  case BookNotFound(id: String)
+  case BookNotAvailable(id: String)
+  case BorrowLimitExceeded(id: String)
+  case ValidationError(id: String)
+  case BookNotBorrowedByUser(idUser: String, idBook: String)
+  case BorrowTransactionNotFound(idUser: String, idBook: String)
+
+
+type LibraryResult[A] = Either[LibraryError, A]
 
 /**
  * Service principal pour la gestion de la bibliothèque
@@ -79,9 +92,9 @@ class LibraryService(private var catalog: LibCatalog = Catalog.empty) {
       transaction
     }
   }
-  
+
   // Consultation
-  def getCatalog: Catalog = catalog
+  def getCatalog: LibCatalog = catalog
   
   def getUserBorrowedBooks(userId: String): LibraryResult[List[Book]] = {
     for {
