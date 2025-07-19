@@ -5,25 +5,28 @@ import io.circe.{Decoder, Encoder}
 import io.circe.generic.semiauto.*
 import upickle.default._
 import utils.JsonUtil.ReaderWriterLocalDate
+import utils.JsonUtil.ReaderWriterID
+import utils.CustomTypes._
+import utils.Id
 
 /**
  * Représente un utilisateur de la bibliothèque
  */
 case class User(
-  id: String,
+  id: Id,
   firstName: String,
   lastName: String,
   email: String,
   membershipDate: LocalDate,
   userType: UserType,
-  borrowedBooks: List[String] = List.empty,
+  borrowedBooks: List[Id] = List.empty,
   maxBorrowLimit: Int = 5
 ) derives ReadWriter {
   def fullName: String = s"$firstName $lastName"
   
   def canBorrow: Boolean = borrowedBooks.length < maxBorrowLimit
   
-  def borrowBook(bookId: String): Either[String, User] = {
+  def borrowBook(bookId: Id): Either[String, User] = {
     if (canBorrow && !borrowedBooks.contains(bookId)) {
       Right(this.copy(borrowedBooks = bookId :: borrowedBooks))
     } else if (borrowedBooks.contains(bookId)) {
@@ -33,7 +36,7 @@ case class User(
     }
   }
   
-  def returnBook(bookId: String): Either[String, User] = {
+  def returnBook(bookId: Id): Either[String, User] = {
     if (borrowedBooks.contains(bookId)) {
       Right(this.copy(borrowedBooks = borrowedBooks.filterNot(_ == bookId)))
     } else {
@@ -46,12 +49,3 @@ enum UserType derives ReadWriter {
   case Student, Faculty, External
 }
 
-object User {
-  given Encoder[User] = deriveEncoder
-  given Decoder[User] = deriveDecoder
-}
-
-object UserType {
-  given Encoder[UserType] = deriveEncoder
-  given Decoder[UserType] = deriveDecoder
-}

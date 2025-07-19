@@ -1,10 +1,12 @@
 package services
 
 import models.*
+
 import java.time.LocalDateTime
 import java.util.UUID
-import utils.ErrorHandling._
-import utils.CustomTypes._
+import utils.ErrorHandling.*
+import utils.CustomTypes.*
+import utils.Id
 
 /** Service principal pour la gestion de la bibliothèque Implémentation
   * immutable conforme aux principes de la programmation fonctionnelle
@@ -45,8 +47,8 @@ case class LibraryService(private val catalog: LibCatalog = Catalog.empty) {
 
   // Opérations d'emprunt et de retour
   def borrowBook(
-      userId: String,
-      bookId: String
+      userId: Id,
+      bookId: Id
   ): LibraryResult[(LibraryService, Transaction)] = {
     for {
       user <- catalog.getUser(userId).toRight(LibraryError.UserNotFound(userId))
@@ -69,7 +71,7 @@ case class LibraryService(private val catalog: LibCatalog = Catalog.empty) {
         LibraryError.ValidationError.apply
       )
       transaction = Transaction.createBorrow(
-        UUID.randomUUID().toString,
+        Id(UUID.randomUUID().toString),
         userId,
         bookId
       )
@@ -81,8 +83,8 @@ case class LibraryService(private val catalog: LibCatalog = Catalog.empty) {
   }
 
   def returnBook(
-      userId: String,
-      bookId: String
+      userId: Id,
+      bookId: Id
   ): LibraryResult[(LibraryService, Transaction)] = {
     for {
       user <- catalog.getUser(userId).toRight(LibraryError.UserNotFound(userId))
@@ -107,7 +109,7 @@ case class LibraryService(private val catalog: LibCatalog = Catalog.empty) {
         LibraryError.ValidationError.apply
       )
       transaction = Transaction.createReturn(
-        UUID.randomUUID().toString,
+        Id(UUID.randomUUID().toString),
         userId,
         bookId,
         if (fine > 0) Some(fine) else None
@@ -122,7 +124,7 @@ case class LibraryService(private val catalog: LibCatalog = Catalog.empty) {
   // Consultation
   def getCatalog: LibCatalog = catalog
 
-  def getUserBorrowedBooks(userId: String): LibraryResult[List[Book]] = {
+  def getUserBorrowedBooks(userId: Id): LibraryResult[List[Book]] = {
     for {
       user <- catalog.getUser(userId).toRight(LibraryError.UserNotFound(userId))
       books = user.borrowedBooks.flatMap(catalog.getBook)

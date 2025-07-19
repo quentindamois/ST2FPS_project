@@ -4,24 +4,24 @@ import models._
 
 object ErrorHandling {
   enum LibraryError(val message: String):
-    case BookNotFound(id: String)
+    case BookNotFound(id: Id)
         extends LibraryError(s"Book with id $id not found")
-    case BookAlreadyExists(id: String)
+    case BookAlreadyExists(id: Id)
         extends LibraryError(s"Book with id $id already exists")
-    case UserNotFound(id: String)
+    case UserNotFound(id: Id)
         extends LibraryError(s"User with id $id not found")
-    case UserAlreadyExists(id: String)
+    case UserAlreadyExists(id: Id)
         extends LibraryError(s"User with id $id already exists")
-    case BookNotAvailable(id: String)
+    case BookNotAvailable(id: Id)
         extends LibraryError(s"Book with id $id is not available")
-    case InvalidTransaction(id: String)
+    case InvalidTransaction(id: Id)
         extends LibraryError(s"Invalid transaction with id $id")
     case ValidationError(msg: String) extends LibraryError(msg)
-    case BorrowLimitExceeded(userId: String)
+    case BorrowLimitExceeded(userId: Id)
         extends LibraryError(s"User $userId has exceeded borrow limit")
-    case BookNotBorrowedByUser(userId: String, bookId: String)
+    case BookNotBorrowedByUser(userId: Id, bookId: Id)
         extends LibraryError(s"Book $bookId is not borrowed by user $userId")
-    case BorrowTransactionNotFound(userId: String, bookId: String)
+    case BorrowTransactionNotFound(userId: Id, bookId: Id)
         extends LibraryError(
           s"Borrow transaction for user $userId and book $bookId not found"
         )

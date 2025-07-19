@@ -1,12 +1,13 @@
 package services
 
 import models.*
+import utils.Id
 
 /** Service de recommandation de livres Implémentation immutable conforme aux
   * principes de la programmation fonctionnelle
   */
 case class RecommendationService(libraryService: LibraryService) {
-  def recommendBooksByGenre(userId: String, limit: Int = 5): List[Book] = {
+  def recommendBooksByGenre(userId: Id, limit: Int = 5): List[Book] = {
     val userBorrowHistory = getUserBorrowHistory(userId)
     val preferredGenres = getPreferredGenres(userBorrowHistory)
 
@@ -32,7 +33,7 @@ case class RecommendationService(libraryService: LibraryService) {
     }
   }
 
-  def recommendBooksByAuthor(userId: String, limit: Int = 5): List[Book] = {
+  def recommendBooksByAuthor(userId: Id, limit: Int = 5): List[Book] = {
     val userBorrowHistory = getUserBorrowHistory(userId)
     val preferredAuthors = getPreferredAuthors(userBorrowHistory)
 
@@ -45,7 +46,7 @@ case class RecommendationService(libraryService: LibraryService) {
       .take(limit)
   }
 
-  def getSimilarBooks(bookId: String, limit: Int = 5): List[Book] = {
+  def getSimilarBooks(bookId: Id, limit: Int = 5): List[Book] = {
     val catalog = libraryService.getCatalog
 
     catalog.getBook(bookId) match {
@@ -62,7 +63,7 @@ case class RecommendationService(libraryService: LibraryService) {
     }
   }
 
-  private def getUserBorrowHistory(userId: String): List[Book] = {
+  private def getUserBorrowHistory(userId: Id): List[Book] = {
     val catalog = libraryService.getCatalog
     val userTransactions = catalog.getTransactionsByUser(userId)
 

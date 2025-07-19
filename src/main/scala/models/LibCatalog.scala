@@ -2,15 +2,16 @@ package models
 
 import io.circe.{Decoder, Encoder}
 import io.circe.generic.semiauto.*
-import upickle.default._
+import upickle.default.*
+import utils.Id
 
 
 /**
  * Représente le catalogue de la bibliothèque
  */
 case class LibCatalog (
-  books: Map[String, Book] = Map.empty,
-  users: Map[String, User] = Map.empty,
+  books: Map[Id, Book] = Map.empty,
+  users: Map[Id, User] = Map.empty,
   transactions: List[Transaction] = List.empty
 ) derives ReadWriter {
   // Opérations sur les livres
@@ -18,11 +19,11 @@ case class LibCatalog (
     this.copy(books = books + (book.id -> book))
   }
   
-  def removeBook(bookId: String): LibCatalog = {
+  def removeBook(bookId: Id): LibCatalog = {
     this.copy(books = books - bookId)
   }
   
-  def getBook(bookId: String): Option[Book] = books.get(bookId)
+  def getBook(bookId: Id): Option[Book] = books.get(bookId)
   
   def findBooksByTitle(title: String): List[Book] = {
     books.values.filter(_.title.toLowerCase.contains(title.toLowerCase)).toList
@@ -41,22 +42,22 @@ case class LibCatalog (
     this.copy(users = users + (user.id -> user))
   }
   
-  def removeUser(userId: String): LibCatalog = {
+  def removeUser(userId: Id): LibCatalog = {
     this.copy(users = users - userId)
   }
   
-  def getUser(userId: String): Option[User] = users.get(userId)
+  def getUser(userId: Id): Option[User] = users.get(userId)
   
   // Opérations sur les transactions
   def addTransaction(transaction: Transaction): LibCatalog = {
     this.copy(transactions = transaction :: transactions)
   }
   
-  def getTransactionsByUser(userId: String): List[Transaction] = {
+  def getTransactionsByUser(userId: Id): List[Transaction] = {
     transactions.filter(_.userId == userId)
   }
   
-  def getTransactionsByBook(bookId: String): List[Transaction] = {
+  def getTransactionsByBook(bookId: Id): List[Transaction] = {
     transactions.filter(_.bookId == bookId)
   }
   
@@ -74,8 +75,5 @@ case class LibCatalog (
 }
 
 object Catalog {
-  given Encoder[LibCatalog] = deriveEncoder
-  given Decoder[LibCatalog] = deriveDecoder
-  
   def empty: LibCatalog = LibCatalog()
 }

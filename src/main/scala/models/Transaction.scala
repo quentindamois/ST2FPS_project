@@ -1,19 +1,19 @@
 package models
 
 import java.time.LocalDateTime
-import io.circe.{Decoder, Encoder}
-import io.circe.generic.semiauto.*
-import upickle.default._
-import utils.JsonUtil._
+import upickle.default.*
+import utils.JsonUtil.*
 import utils.JsonUtil.ReaderWriterLocalDate
+import utils.CustomTypes.*
+import utils.Id
 
 /**
  * Représente une transaction (emprunt/retour) dans la bibliothèque
  */
 case class Transaction(
-  id: String,
-  userId: String,
-  bookId: String,
+  id: Id,
+  userId: Id,
+  bookId: Id,
   transactionType: TransactionType,
   timestamp: LocalDateTime,
   dueDate: Option[LocalDateTime] = None,
@@ -45,10 +45,7 @@ enum TransactionType derives ReadWriter {
 }
 
 object Transaction {
-  given Encoder[Transaction] = deriveEncoder
-  given Decoder[Transaction] = deriveDecoder
-  
-  def createBorrow(id: String, userId: String, bookId: String, borrowPeriodDays: Int = 14): Transaction = {
+  def createBorrow(id: Id, userId: Id, bookId: Id, borrowPeriodDays: Int = 14): Transaction = {
     val now = LocalDateTime.now()
     Transaction(
       id = id,
@@ -60,7 +57,7 @@ object Transaction {
     )
   }
   
-  def createReturn(id: String, userId: String, bookId: String, fine: Option[Double] = None): Transaction = {
+  def createReturn(id: Id, userId: Id, bookId: Id, fine: Option[Double] = None): Transaction = {
     Transaction(
       id = id,
       userId = userId,
@@ -73,7 +70,3 @@ object Transaction {
   }
 }
 
-object TransactionType {
-  given Encoder[TransactionType] = deriveEncoder
-  given Decoder[TransactionType] = deriveDecoder
-}

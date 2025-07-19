@@ -8,7 +8,7 @@ import java.time.{LocalDate, LocalDateTime}
 import java.io.{File, FileNotFoundException, FileWriter}
 import java.time.format.DateTimeFormatter
 import scala.util.Try
-
+import utils.CustomTypes
 
   
   
@@ -144,5 +144,11 @@ object JsonUtil {
     locDateTime => locDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
     strLocalDate => LocalDateTime.parse(strLocalDate)
   )
-
+  /**
+   * This is the custom pickler for the type ID
+   */
+  implicit val ReaderWriterID: ReadWriter[Id] = upickle.default.readwriter[String].bimap(
+    id => id.toString,
+    strId => Id(strId)
+  )
 }

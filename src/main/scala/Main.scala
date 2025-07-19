@@ -2,7 +2,8 @@ package main
 
 import models.*
 import services.*
-import utils.JsonUtil
+import utils.{Id, JsonUtil}
+
 import java.time.LocalDate
 import java.util.UUID
 
@@ -29,10 +30,10 @@ object Main extends App {
     // Création de quelques livres d'exemple
     val books = List(
       Book(
-        id = UUID.randomUUID().toString,
+        id = Id(UUID.randomUUID().toString),
         title = "Le Petit Prince",
         author = "Antoine de Saint-Exupéry",
-        isbn = "978-2-07-040848-4",
+        isbn = Id("978-2-07-040848-4"),
         publishedDate = LocalDate.of(1943, 4, 6),
         genre = "Littérature",
         totalCopies = 5,
@@ -40,10 +41,10 @@ object Main extends App {
         description = Some("Un conte philosophique et poétique")
       ),
       Book(
-        id = UUID.randomUUID().toString,
+        id = Id(UUID.randomUUID().toString),
         title = "1984",
         author = "George Orwell",
-        isbn = "978-0-452-28423-4",
+        isbn = Id("978-0-452-28423-4"),
         publishedDate = LocalDate.of(1949, 6, 8),
         genre = "Science-fiction",
         totalCopies = 3,
@@ -51,10 +52,10 @@ object Main extends App {
         description = Some("Un roman dystopique sur la surveillance")
       ),
       Book(
-        id = UUID.randomUUID().toString,
+        id = Id(UUID.randomUUID().toString),
         title = "Scala Programming",
         author = "Martin Odersky",
-        isbn = "978-0-981531-64-7",
+        isbn = Id("978-0-981531-64-7"),
         publishedDate = LocalDate.of(2008, 1, 1),
         genre = "Informatique",
         totalCopies = 2,
@@ -80,7 +81,7 @@ object Main extends App {
     // Création d'utilisateurs
     val users = List(
       User(
-        id = UUID.randomUUID().toString,
+        id = Id(UUID.randomUUID().toString),
         firstName = "Marie",
         lastName = "Dupont",
         email = "marie.dupont@email.com",
@@ -88,7 +89,7 @@ object Main extends App {
         userType = UserType.Student
       ),
       User(
-        id = UUID.randomUUID().toString,
+        id = Id(UUID.randomUUID().toString),
         firstName = "Jean",
         lastName = "Martin",
         email = "jean.martin@email.com",
