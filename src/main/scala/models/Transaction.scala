@@ -3,6 +3,9 @@ package models
 import java.time.LocalDateTime
 import io.circe.{Decoder, Encoder}
 import io.circe.generic.semiauto.*
+import upickle.default._
+import utils.JsonUtil._
+import utils.JsonUtil.ReaderWriterLocalDate
 
 /**
  * Représente une transaction (emprunt/retour) dans la bibliothèque
@@ -16,7 +19,7 @@ case class Transaction(
   dueDate: Option[LocalDateTime] = None,
   returnDate: Option[LocalDateTime] = None,
   fine: Option[Double] = None
-) {
+) derives ReadWriter {
   def isOverdue: Boolean = {
     (transactionType, dueDate, returnDate) match {
       case (TransactionType.Borrow, Some(due), None) => LocalDateTime.now().isAfter(due)
@@ -37,7 +40,7 @@ case class Transaction(
   }
 }
 
-enum TransactionType {
+enum TransactionType derives ReadWriter {
   case Borrow, Return
 }
 
