@@ -3,6 +3,9 @@ package models
 import java.time.LocalDate
 import io.circe.{Decoder, Encoder}
 import io.circe.generic.semiauto.*
+import upickle.default._
+import utils.JsonUtil._
+import utils.JsonUtil.ReaderWriterLocalDate
 
 /**
  * Représente un livre dans la bibliothèque
@@ -17,7 +20,7 @@ case class Book(
   totalCopies: Int,
   availableCopies: Int,
   description: Option[String] = None
-) {
+) derives ReadWriter {
   def isAvailable: Boolean = availableCopies > 0
   
   def borrowCopy: Either[String, Book] = {
