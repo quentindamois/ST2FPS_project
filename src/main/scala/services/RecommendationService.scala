@@ -93,7 +93,7 @@ class RecommendationService(libraryService: LibraryService) {
       .take(3)
   }
 
-  private def getPopularBooks(catalog: Catalog): List[Book] = {
+  private def getPopularBooks(catalog: LibCatalog): List[Book] = {
     // Calculer la popularité basée sur le nombre d'emprunts
     val borrowCounts = catalog.transactions
       .filter(_.transactionType == TransactionType.Borrow)
