@@ -1,22 +1,18 @@
 package utils
 import models.LibCatalog
-import utils.FileError.{ConversionError, PathError, ReadingError}
+import utils.ErrorHandling.*
 import upickle.default.*
+import utils.ErrorHandling.FileError.ConversionError
 
 import java.time.{LocalDate, LocalDateTime}
 import java.io.{File, FileNotFoundException, FileWriter}
 import java.time.format.DateTimeFormatter
 import scala.util.Try
 
-// all the possible error
-enum FileError():
-  case PathError, AuthorisationError, ReadingError, ConversionError
+
   
   
 
-//The type for the type of the output for each function
-type fileOperationInnerResult[A] = Either[FileError, A]
-type fileOperationOutput[A] = Either[String, A]
 
 object JsonUtil {
   /** 
@@ -26,14 +22,14 @@ object JsonUtil {
     * @param pathToFile a String corresponding the path to the file where we are saving the library
     * @return an Either[String, String] that contain on the left a message about the error encountered and on the right a message indicating success
     */
-  def saveToFile(lib: LibCatalog, pathToFile: String): fileOperationOutput[String] = { 
+  def saveToFile(lib: LibCatalog, pathToFile: String): Result[String] = {
     val writeToFile: File => fileOperationInnerResult[String] = {
       (file: File) => safeLibConvertingToJson(lib).flatMap((jsonContent) => safeFileWriting(file, jsonContent))
     }
     safeFileOpening(pathToFile).flatMap(writeToFile) match {
       case Left(errorOperation) if  errorOperation == ConversionError => Left("the library could not be converted in Json.")
-      case Left(errorOperation) if errorOperation == PathError => Left(s"$pathToFile does not exist")
-      case Left(errorOperation) if errorOperation == FileError.AuthorisationError => Left(s"$pathToFile cannot not be edited.")
+      case Left(errorOperation) if errorOperation == FileError.PathError => Left(s"$pathToFile cannot be reached")
+      case Left(errorOperation) if errorOperation == FileError.AuthorisationError => Left(s"$pathToFile cannot be edited.")
       case Right(result) => Right(result)
       case _ => Left("There is an issue when trying to save the library.")
     }
@@ -44,11 +40,11 @@ object JsonUtil {
     * @param pathToFile a String corresponding the path to the file from where we are loading the library
     * @return an Either[String, libCatalog] hat contain on the left a message about the error encountered and on the right the LibCatalog successfully loaded
     **/
-  def LoadFromFile(pathToFile: String): fileOperationOutput[LibCatalog] = { //TODO: test the function LoadFromFile
+  def LoadFromFile(pathToFile: String): Result[LibCatalog] = { //TODO: test the function LoadFromFile
     safeFileOpening(pathToFile).flatMap(safeFileReading).flatMap(safeJsonConvertingToLib) match {
-      case Left(errorOperation) if  errorOperation == ConversionError => Left("the library could not be converted in Json.")
-      case Left(errorOperation) if errorOperation == PathError => Left(s"$pathToFile does not exist")
-      case Left(errorOperation) if errorOperation == FileError.ReadingError => Left(s"$pathToFile cannot not be read.")
+      case Left(errorOperation) if  errorOperation == FileError.ConversionError => Left("the json could not be converted in Library.")
+      case Left(errorOperation) if errorOperation == FileError.PathError => Left(s"$pathToFile cannot be reached")
+      case Left(errorOperation) if errorOperation == FileError.ReadingError => Left(s"$pathToFile cannot be read.")
       case Right(result) => Right(result)
       case _ => Left("There is an issue when trying to load the library.")
     }
@@ -64,7 +60,7 @@ object JsonUtil {
       val jsonFile = new File(pathToFile)
       Right(jsonFile)
     } catch {
-      case _ => Left(FileError.PathError)
+      case _ => Left(FileError.PathError(pathToFile))
     }
   }
   /**
@@ -81,7 +77,7 @@ object JsonUtil {
       fileWriter.close()
       Right("Success: File written with success.")
     } catch {
-      case _ => Left(FileError.AuthorisationError)
+      case _ => Left(FileError.AuthorisationError(file.toString))
     }
   }
 
@@ -98,7 +94,7 @@ object JsonUtil {
       FileReader.close()
       Right(content)
     } catch {
-      case _ => Left(FileError.ReadingError)
+      case _ => Left(FileError.ReadingError(fileName.toString))
     }
   }
   /**
@@ -112,7 +108,7 @@ object JsonUtil {
       val jsonContent = upickle.default.write(lib)
       Right(jsonContent)
     } catch {
-      case _ => Left(FileError.ConversionError)
+      case _ => Left(FileError.ConversionError("LibCatalog", "Json"))
     }
   }
 
@@ -127,7 +123,7 @@ object JsonUtil {
       val lib = upickle.default.read[LibCatalog](jsonContent)
       Right(lib)
     } catch {
-      case _ => Left(FileError.ConversionError)
+      case _ => Left(FileError.ConversionError("Json", "LibCatalog"))
     }
   }
   //based on https://github.com/com-lihaoyi/upickle/issues/260
@@ -149,12 +145,4 @@ object JsonUtil {
     strLocalDate => LocalDateTime.parse(strLocalDate)
   )
 
-}
-
-
-
-
-@main def mainJsonUtil(): Unit = {
-  val testLibrary = LibCatalog()
-  println(JsonUtil.safeLibConvertingToJson(testLibrary))
 }

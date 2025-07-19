@@ -5,6 +5,9 @@ import models._
 object ErrorHandling {
   type Result[T] = Either[String, T]
   type LibraryResult[T] = Either[LibraryError, T]
+  //The type for the type of the output for each function
+  type fileOperationInnerResult[A] = Either[FileError, A]
+  type fileOperationOutput[A] = Either[String, A]
 
   enum LibraryError(val message: String):
     case BookNotFound(id: String)
@@ -28,4 +31,11 @@ object ErrorHandling {
         extends LibraryError(
           s"Borrow transaction for user $userId and book $bookId not found"
         )
+
+  // all the possible error
+  enum FileError(val message: String):
+    case PathError(path: String) extends FileError(s"$path cannot be access")
+    case AuthorisationError(file: String) extends FileError(s"$file cannot be edited")
+    case ReadingError(file: String) extends FileError(s"$file cannot be read")
+    case ConversionError(startingType: String, finalType: String) extends FileError(s"$startingType cannot be converted to $finalType")
 }
