@@ -3,11 +3,12 @@ package services
 import models.*
 import java.time.LocalDateTime
 import java.util.UUID
+import utils.ErrorHandling._
 
 /** Service principal pour la gestion de la bibliothèque Implémentation
   * immutable conforme aux principes de la programmation fonctionnelle
   */
-case class LibraryService(private val catalog: Catalog = Catalog.empty) {
+case class LibraryService(private val catalog: LibCatalog = Catalog.empty) {
 
   // Gestion des livres
   def addBook(book: Book): LibraryResult[LibraryService] = {
@@ -118,7 +119,7 @@ case class LibraryService(private val catalog: Catalog = Catalog.empty) {
   }
 
   // Consultation
-  def getCatalog: Catalog = catalog
+  def getCatalog: LibCatalog = catalog
 
   def getUserBorrowedBooks(userId: String): LibraryResult[List[Book]] = {
     for {
