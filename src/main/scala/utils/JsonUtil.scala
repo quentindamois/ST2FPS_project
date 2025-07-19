@@ -1,8 +1,11 @@
 package utils
 import models.LibCatalog
 import utils.FileError.{ConversionError, PathError, ReadingError}
+import upickle.default.*
 
+import java.time.{LocalDate, LocalDateTime}
 import java.io.{File, FileNotFoundException, FileWriter}
+import java.time.format.DateTimeFormatter
 import scala.util.Try
 
 // all the possible error
