@@ -175,7 +175,7 @@ object Main extends App { //TODO: allow the user to test the program themselves
       }
     }
 
-    println("\n--- Saving a Library catalog ---")
+    println("\n--- Saving a library's catalog ---")
 
     // saving in JSON
     JsonUtil.saveToFile(
@@ -184,6 +184,16 @@ object Main extends App { //TODO: allow the user to test the program themselves
     ) match {
       case Right(_) =>
         println("[OK] The catalog was saved inside of data/catalog.json")
+      case Left(error) => println(s"[ERROR] Encountered an error when saving: $error")
+    }
+
+    println("\n-- Loading a library's catalog ---")
+    // Loading from a JSON
+    JsonUtil.LoadFromFile(
+      "data/catalog.json"
+    ) match {
+      case Right(contentFile) =>
+        println(s"[OK] This is the successfully load Library's catalof\n$contentFile")
       case Left(error) => println(s"[ERROR] Encountered an error when saving: $error")
     }
 
