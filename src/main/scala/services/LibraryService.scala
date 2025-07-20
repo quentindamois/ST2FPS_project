@@ -8,12 +8,18 @@ import utils.ErrorHandling.*
 import utils.CustomTypes.*
 import utils.Id
 
-/** Service principal pour la gestion de la bibliothèque Implémentation
-  * immutable conforme aux principes de la programmation fonctionnelle
+/** 
+  * This class is used to manage the object Library's Catalog
   */
 case class LibraryService(private val catalog: LibCatalog = Catalog.empty) {
 
-  // Gestion des livres
+  // book management
+  /**
+   * Add a book to the Library's catalog
+   * 
+   * @param book A object Book that is going to be added to the list of book inside the library catalog book
+   * @return An updated Library service with the object Book add the Library's catalog
+   * */
   def addBook(book: Book): LibraryResult[LibraryService] = {
     if (catalog.getBook(book.id).isDefined) {
       Left(LibraryError.BookAlreadyExists(book.id))
@@ -22,7 +28,13 @@ case class LibraryService(private val catalog: LibCatalog = Catalog.empty) {
       Right(this.copy(catalog = newCatalog))
     }
   }
-
+  /**
+   * Search the list of book base for a title, author's name or genre
+   * 
+   * @param query a String corresponding to the title, author's name or genre we are searching
+   * @param SearchType a SearchType indicating the what field of book we are querying
+   * @return A list of book who statify the query
+   * */
   def searchBooks(
       query: String,
       searchType: SearchType
@@ -35,7 +47,13 @@ case class LibraryService(private val catalog: LibCatalog = Catalog.empty) {
     Right(results)
   }
 
-  // Gestion des utilisateurs
+  // User management
+  /**
+   * Add a User to the Map of user of the library
+   * 
+   * @param user the User added the Map of user of the Library
+   * @return return a Library result containing a Library Error on the Left if the id of the user already exist and the updated LibraryService on the Right
+   * */
   def addUser(user: User): LibraryResult[LibraryService] = {
     if (catalog.getUser(user.id).isDefined) {
       Left(LibraryError.UserAlreadyExists(user.id))
@@ -45,7 +63,14 @@ case class LibraryService(private val catalog: LibCatalog = Catalog.empty) {
     }
   }
 
-  // Opérations d'emprunt et de retour
+  // Borrow and Return Operation
+  /**
+   * Update the library's catalog to borrow a book
+   * 
+   * @param userId a Id corresponding to the user borrowing the book
+   * @param bookId a Id corresponding to the book the user is borrowing
+   * @return LibraryResult containing a LibraryError on the Left or a Tuple containing the updated LibraryService the new Transaction on the Right
+   * */
   def borrowBook(
       userId: Id,
       bookId: Id
@@ -82,6 +107,13 @@ case class LibraryService(private val catalog: LibCatalog = Catalog.empty) {
     } yield (this.copy(catalog = newCatalog), transaction)
   }
 
+  /**
+   * Update the library's catalog to return a book
+   *
+   * @param userId a Id corresponding to the user returning the book
+   * @param bookId a Id corresponding to the book the user is returning
+   * @return LibraryResult containing a LibraryError on the Left or a Tuple containing the updated LibraryService the new Transaction on the Right
+   * */
   def returnBook(
       userId: Id,
       bookId: Id
@@ -122,15 +154,30 @@ case class LibraryService(private val catalog: LibCatalog = Catalog.empty) {
   }
 
   // Consultation
+  /**
+   * Get the library's Catalog.
+   * 
+   * @return a LibCatalog inside of the
+   * */
   def getCatalog: LibCatalog = catalog
-
+  
+  /**
+   * Get a List of Book containing the Book borrowed by one user
+   * 
+   * @param userId a Id corresponding to the user we want to get the list of borrowed book
+   * @return A LibraryResult with a Library Error on the Left or a List of Book on the Right
+   * */
   def getUserBorrowedBooks(userId: Id): LibraryResult[List[Book]] = {
     for {
       user <- catalog.getUser(userId).toRight(LibraryError.UserNotFound(userId))
       books = user.borrowedBooks.flatMap(catalog.getBook)
     } yield books
   }
-
+  /**
+   * Get the list of User, Book and Transaction corresponding to user who have overdue books
+   * 
+   * @retun A LibraryResult with a Library Error on the Left or a List of Tuple containing (User, Book, Transaction) on the Right
+   * */
   def getOverdueBooks: LibraryResult[List[(User, Book, Transaction)]] = {
     val overdueTransactions = catalog.overdueTransactions
     val result = overdueTransactions.flatMap { transaction =>
@@ -142,7 +189,9 @@ case class LibraryService(private val catalog: LibCatalog = Catalog.empty) {
     Right(result)
   }
 }
-
+/**
+ * An enum indicating the kind of search that is being performed.
+ * */
 enum SearchType {
   case Title, Author, Genre
 }
