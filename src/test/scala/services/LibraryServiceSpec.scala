@@ -3,6 +3,8 @@ package services
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 import models.*
+import utils.Id
+
 import java.time.LocalDate
 import java.util.UUID
 
@@ -11,10 +13,10 @@ class LibraryServiceSpec extends AnyFunSuite with Matchers {
   test("ajouter un livre au catalogue devrait réussir") {
     val libraryService = LibraryService()
     val book = Book(
-      id = UUID.randomUUID().toString,
+      id = Id(UUID.randomUUID().toString),
       title = "Test Book",
       author = "Test Author",
-      isbn = "978-0-123456-78-9",
+      isbn = Id("978-0-123456-78-9"),
       publishedDate = LocalDate.of(2023, 1, 1),
       genre = "Test",
       totalCopies = 1,
@@ -31,7 +33,7 @@ class LibraryServiceSpec extends AnyFunSuite with Matchers {
   test("ajouter un utilisateur devrait réussir") {
     val libraryService = LibraryService()
     val user = User(
-      id = UUID.randomUUID().toString,
+      id = Id(UUID.randomUUID().toString),
       firstName = "John",
       lastName = "Doe",
       email = "john.doe@email.com",
@@ -50,10 +52,10 @@ class LibraryServiceSpec extends AnyFunSuite with Matchers {
     val initialService = LibraryService()
 
     val book = Book(
-      id = UUID.randomUUID().toString,
+      id = Id(UUID.randomUUID().toString),
       title = "Test Book",
       author = "Test Author",
-      isbn = "978-0-123456-78-9",
+      isbn = Id("978-0-123456-78-9"),
       publishedDate = LocalDate.of(2023, 1, 1),
       genre = "Test",
       totalCopies = 1,
@@ -61,7 +63,7 @@ class LibraryServiceSpec extends AnyFunSuite with Matchers {
     )
 
     val user = User(
-      id = UUID.randomUUID().toString,
+      id = Id(UUID.randomUUID().toString),
       firstName = "John",
       lastName = "Doe",
       email = "john.doe@email.com",

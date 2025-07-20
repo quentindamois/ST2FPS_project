@@ -10,10 +10,10 @@ class BookSpec extends AnyFunSuite with Matchers {
 
   test("un livre disponible devrait permettre l'emprunt") {
     val book = Book(
-      id = "1",
+      id = Id("1"),
       title = "Test Book",
       author = "Test Author",
-      isbn = "978-0-123456-78-9",
+      isbn = Id("978-0-123456-78-9"),
       publishedDate = LocalDate.of(2023, 1, 1),
       genre = "Test",
       totalCopies = 3,
@@ -31,10 +31,10 @@ class BookSpec extends AnyFunSuite with Matchers {
     "un livre sans exemplaire disponible ne devrait pas permettre l'emprunt"
   ) {
     val book = Book(
-      id = "2",
+      id = Id("2"),
       title = "Test Book",
       author = "Test Author",
-      isbn = "978-0-123456-78-9",
+      isbn = Id("978-0-123456-78-9"),
       publishedDate = LocalDate.of(2023, 1, 1),
       genre = "Test",
       totalCopies = 1,
@@ -49,10 +49,10 @@ class BookSpec extends AnyFunSuite with Matchers {
 
   test("le retour d'un livre devrait augmenter les exemplaires disponibles") {
     val book = Book(
-      id = "3",
+      id = Id("3"),
       title = "Test Book",
       author = "Test Author",
-      isbn = "978-0-123456-78-9",
+      isbn = Id("978-0-123456-78-9"),
       publishedDate = LocalDate.of(2023, 1, 1),
       genre = "Test",
       totalCopies = 3,

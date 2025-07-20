@@ -3,11 +3,13 @@ package models
 import java.time.LocalDate
 import io.circe.{Decoder, Encoder}
 import io.circe.generic.semiauto.*
-import upickle.default._
+import upickle.default.*
 import utils.JsonUtil.ReaderWriterLocalDate
 import utils.JsonUtil.ReaderWriterID
-import utils.CustomTypes._
+import utils.CustomTypes.*
 import utils.Id
+
+import scala.annotation.targetName
 
 /**
  * This class represent the user borrowing and returning book
@@ -21,6 +23,7 @@ import utils.Id
  * @param userType a UserType indicating ig the
  * @param borrowedBooks a List[Id] corresponding to the list of id of the Book the user has borrowed
  */
+
 case class User(
   id: Id,
   firstName: String,
@@ -30,7 +33,7 @@ case class User(
   userType: UserType,
   borrowedBooks: List[Id] = List.empty,
   maxBorrowLimit: Int = 5
-) derives ReadWriter {
+)  derives ReadWriter {
   /**
    * Give the fullname of the user
    * 
