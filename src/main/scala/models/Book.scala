@@ -48,7 +48,7 @@ case class Book(
     if (availableCopies > 0) {
       Right(this.copy(availableCopies = availableCopies - 1))
     } else {
-      Left("Aucun exemplaire disponible")
+      Left("No copy is available.")
     }
   }
   /**
@@ -60,7 +60,7 @@ case class Book(
     if (availableCopies < totalCopies) {
       Right(this.copy(availableCopies = availableCopies + 1))
     } else {
-      Left("Tous les exemplaires sont déjà retournés")
+      Left("All copy have been returned.")
     }
   }
 }
