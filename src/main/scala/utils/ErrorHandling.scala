@@ -3,6 +3,9 @@ package utils
 import models._
 
 object ErrorHandling {
+  /**
+   * An enum used to handle the error that can be caused when calling the function from LibraryService.
+   * */
   enum LibraryError(val message: String):
     case BookNotFound(id: Id)
         extends LibraryError(s"Book with id $id not found")
@@ -26,6 +29,9 @@ object ErrorHandling {
           s"Borrow transaction for user $userId and book $bookId not found"
         )
   // all the possible error when using a file
+  /**
+   * An enum used to handle the error that can be caused when calling the function from JsonUtil.
+   * */  
   enum FileError(val message: String):
     case PathError(path: String) extends FileError(s"$path cannot be access")
     case AuthorisationError(file: String) extends FileError(s"$file cannot be edited")
