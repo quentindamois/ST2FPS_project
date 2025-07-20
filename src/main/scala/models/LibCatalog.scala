@@ -4,14 +4,16 @@ import io.circe.{Decoder, Encoder}
 import io.circe.generic.semiauto.*
 import upickle.default.*
 import utils.Id
+import utils.JsonUtil._
+import utils.CustomTypes._
 
 
 /**
  * Représente le catalogue de la bibliothèque
  */
 case class LibCatalog (
-  books: Map[Id, Book] = Map.empty,
-  users: Map[Id, User] = Map.empty,
+  books: LibraryMapIdTo[Book] = Map.empty,
+  users: LibraryMapIdTo[User] = Map.empty,
   transactions: List[Transaction] = List.empty
 ) derives ReadWriter {
   // Opérations sur les livres
