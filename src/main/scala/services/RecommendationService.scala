@@ -3,10 +3,20 @@ package services
 import models.*
 import utils.Id
 
-/** Service de recommandation de livres Implémentation immutable conforme aux
-  * principes de la programmation fonctionnelle
+/**
+  * An object used to do recommendation
+  *
+  * @constructor Create an object RecommendationService
+  * @param LibraryService a LibraryService we will use to recommend the user inside the book in the Library's catalog
   */
 case class RecommendationService(libraryService: LibraryService) {
+  /**
+   * Recommend a list of book available book to a user based on the genre of the books previously borrowed by hte user
+   *
+   * @param userID an Id corresponding to the id of user we are recommanding book to
+   * @param limit an Int corresponding to the number of book we are recommanding to the user
+   * @return A list of Book recommended to the user based on the genre
+   * */
   def recommendBooksByGenre(userId: Id, limit: Int = 5): List[Book] = {
     val userBorrowHistory = getUserBorrowHistory(userId)
     val preferredGenres = getPreferredGenres(userBorrowHistory)
@@ -32,7 +42,13 @@ case class RecommendationService(libraryService: LibraryService) {
       recommendations
     }
   }
-
+  /**
+   * Recommend a list of book available book to a user based on the author of the books previously borrowed by hte user
+   *
+   * @param userID an Id corresponding to the id of user we are recommending book to
+   * @param limit an Int corresponding to the number of book we are recommending to the user
+   * @return A list of Book recommended to the user based on the genre
+   * */
   def recommendBooksByAuthor(userId: Id, limit: Int = 5): List[Book] = {
     val userBorrowHistory = getUserBorrowHistory(userId)
     val preferredAuthors = getPreferredAuthors(userBorrowHistory)
@@ -45,7 +61,13 @@ case class RecommendationService(libraryService: LibraryService) {
       .filterNot(book => userBorrowHistory.map(_.id).contains(book.id))
       .take(limit)
   }
-
+  /**
+   * Get a list of Book that have the same genre or author as the id of the book given as an input
+   *
+   * @param bookId an Id corresponding to the id of the book we want to find similarities
+   * @param limit an Int corresponding to the maximum number of book we want to find
+   * @return List of Book that have the same genre or author as the book given as an input
+   * */
   def getSimilarBooks(bookId: Id, limit: Int = 5): List[Book] = {
     val catalog = libraryService.getCatalog
 
@@ -62,7 +84,12 @@ case class RecommendationService(libraryService: LibraryService) {
       case None => List.empty
     }
   }
-
+  /**
+   * Get the list of books of a user has borrowed
+   *
+   * @param userID an Id corresponding to the user we want to get the list of borrowed book
+   * @return a List of Book that correspond to all the book the user has borrowed
+   * */
   private def getUserBorrowHistory(userId: Id): List[Book] = {
     val catalog = libraryService.getCatalog
     val userTransactions = catalog.getTransactionsByUser(userId)
@@ -71,7 +98,12 @@ case class RecommendationService(libraryService: LibraryService) {
       .filter(_.transactionType == TransactionType.Borrow)
       .flatMap(t => catalog.getBook(t.bookId))
   }
-
+  /**
+   * Get the three most common genre of the book inside a list of book
+   *
+   * @param book the List of Book we are looking at
+   * @return a string corresponding to the list genre the most common genre
+   * */
   private def getPreferredGenres(books: List[Book]): List[String] = {
     books
       .groupBy(_.genre)
@@ -82,7 +114,12 @@ case class RecommendationService(libraryService: LibraryService) {
       .map(_._1)
       .take(3)
   }
-
+  /**
+   * Get the three most common genre of the book inside a list of book
+   *
+   * @param book the List of Book we are looking at
+   * @return a string corresponding to the list genre the most common genre
+   * */
   private def getPreferredAuthors(books: List[Book]): List[String] = {
     books
       .groupBy(_.author)
@@ -93,7 +130,12 @@ case class RecommendationService(libraryService: LibraryService) {
       .map(_._1)
       .take(3)
   }
-
+  /**
+   * Get the most borrowed book from the library's catalog
+   * 
+   * @param catalog a LibCatalog corresponding to a library's catalog from which we want to get the populare books
+   * @return a List of Book containing the Book that are most popular
+   * */
   private def getPopularBooks(catalog: LibCatalog): List[Book] = {
     // Calculer la popularité basée sur le nombre d'emprunts
     val borrowCounts = catalog.transactions
@@ -107,7 +149,13 @@ case class RecommendationService(libraryService: LibraryService) {
       .sortBy(book => borrowCounts.getOrElse(book.id, 0))
       .reverse
   }
-
+/**
+ * Calculate the similarity between two Books
+ * 
+ * @param book1 the first book we want to compare
+ * @param book2 the secodn book we want to compare
+ * @return a double corresponding to the similarity between to Books
+ * */
   private def calculateSimilarity(book1: Book, book2: Book): Double = {
     var similarity = 0.0
 
