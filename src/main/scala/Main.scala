@@ -10,7 +10,7 @@ import java.util.UUID
 /** Application principale du système de gestion de bibliothèque Implémentation
   * conforme aux principes de la programmation fonctionnelle
   */
-object Main extends App {
+object Main extends App { //TODO: allow the user to test the program themselves
 
   println("=== Management system of the Library ===")
   println("Welcome to the managment system of the librart")
