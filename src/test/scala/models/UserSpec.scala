@@ -1,5 +1,5 @@
 package models
 
-class UserSpec {
+class UserSpec { //TODO: Create the test
 
 }

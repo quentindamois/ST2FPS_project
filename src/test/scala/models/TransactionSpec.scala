@@ -1,5 +1,5 @@
 package models
 
-class TransactionSpec {
+class TransactionSpec { //TODO: Create the test
 
 }
