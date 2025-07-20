@@ -1,5 +1,8 @@
 package utils
 
+/**
+ * An Opaque type used 
+ * */
 opaque type Id = String
 object Id:
   def apply(strId: String): Id = strId
