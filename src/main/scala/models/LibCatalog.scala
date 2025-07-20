@@ -74,9 +74,9 @@ case class LibCatalog (
     books.values.filter(_.genre.toLowerCase.contains(genre.toLowerCase)).toList
   }
   
-  // Opérations sur les utilisateurs
+  // Operation on the User
   /**
-    * Add a object User to the field users
+    * Add an object User to the field users
     *
     * @param user a User object added to the Map users
     * @return a New LibCatalog with the new Users object to the field users
@@ -102,7 +102,7 @@ case class LibCatalog (
    */
   def getUser(userId: Id): Option[User] = users.get(userId)
   
-  // Opérations sur les transactions
+  // Operation on the transaction
   /**
     * Add a Transaction object to the field transactions.
     *
@@ -132,7 +132,7 @@ case class LibCatalog (
     transactions.filter(_.bookId == bookId)
   }
   
-  // Statistiques
+  // Statistic
   /**
     * Give the number of book in the fields books
     *

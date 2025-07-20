@@ -23,14 +23,14 @@ case class RecommendationService(libraryService: LibraryService) {
 
     val catalog = libraryService.getCatalog
     val availableBooks = catalog.availableBooks
-
-    // Recommander des livres du même genre que ceux empruntés précédemment
+    
+    // Recommending book with the same genre as the book previously borrowed
     val recommendations = availableBooks
       .filter(book => preferredGenres.contains(book.genre))
       .filterNot(book => userBorrowHistory.map(_.id).contains(book.id))
       .take(limit)
 
-    // Si pas assez de recommandations, ajouter des livres populaires
+    // If there is not enough document we add popular books
     if (recommendations.length < limit) {
       val popularBooks = getPopularBooks(catalog)
         .filterNot(book => userBorrowHistory.map(_.id).contains(book.id))
@@ -137,7 +137,6 @@ case class RecommendationService(libraryService: LibraryService) {
    * @return a List of Book containing the Book that are most popular
    * */
   private def getPopularBooks(catalog: LibCatalog): List[Book] = {
-    // Calculer la popularité basée sur le nombre d'emprunts
     val borrowCounts = catalog.transactions
       .filter(_.transactionType == TransactionType.Borrow)
       .groupBy(_.bookId)
@@ -159,13 +158,13 @@ case class RecommendationService(libraryService: LibraryService) {
   private def calculateSimilarity(book1: Book, book2: Book): Double = {
     var similarity = 0.0
 
-    // Même genre = +0.5
+    // Same genre = +0.5
     if (book1.genre == book2.genre) similarity += 0.5
 
-    // Même auteur = +0.3
+    // Same author = +0.3
     if (book1.author == book2.author) similarity += 0.3
 
-    // Année de publication proche = +0.2
+    // Year of publication = +0.2
     val yearDiff =
       math.abs(book1.publishedDate.getYear - book2.publishedDate.getYear)
     if (yearDiff <= 5) similarity += 0.2

@@ -71,7 +71,7 @@ class LibraryServiceSpec extends AnyFunSuite with Matchers {
       userType = UserType.Student
     )
 
-    // Ajout séquentiel des données avec services immutables
+    // Adding data to show immutability
     val serviceWithBook = initialService.addBook(book).getOrElse(initialService)
     val serviceWithUser =
       serviceWithBook.addUser(user).getOrElse(serviceWithBook)

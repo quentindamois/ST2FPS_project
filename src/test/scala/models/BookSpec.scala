@@ -8,7 +8,7 @@ import utils.Id
 
 class BookSpec extends AnyFunSuite with Matchers {
 
-  test("un livre disponible devrait permettre l'emprunt") {
+  test("An available books should allow borrowing") {
     val book = Book(
       id = Id("1"),
       title = "Test Book",
@@ -28,7 +28,7 @@ class BookSpec extends AnyFunSuite with Matchers {
   }
 
   test(
-    "un livre sans exemplaire disponible ne devrait pas permettre l'emprunt"
+    "A book without available copy should not allow borrowing"
   ) {
     val book = Book(
       id = Id("2"),

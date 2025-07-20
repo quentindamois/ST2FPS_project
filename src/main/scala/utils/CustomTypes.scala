@@ -8,7 +8,7 @@ object CustomTypes {
    * An Option[String] used for field description of the Object Bbook
    * */
   type Description = Option[String]
-  //These are use to return content from function
+  //These are used to return content from function
   /**
    * An Either[String, T] use for the return type of function with T a wild card.
    * */
