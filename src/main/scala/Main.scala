@@ -7,13 +7,13 @@ import utils.{Id, JsonUtil}
 import java.time.LocalDate
 import java.util.UUID
 
-/** Application principale du système de gestion de bibliothèque Implémentation
-  * conforme aux principes de la programmation fonctionnelle
+/**
+  * Main application used the application
   */
 object Main extends App { //TODO: allow the user to test the program themselves
 
   println("=== Management system of the Library ===")
-  println("Welcome to the managment system of the librart")
+  println("Welcome to the management system of the library")
 
   // Initialisation of the service services (immutables)
   val initialLibraryService = LibraryService()
@@ -21,7 +21,7 @@ object Main extends App { //TODO: allow the user to test the program themselves
     initialLibraryService
   )
 
-  // Demonststation of the systemes
+  // Demonstration of the systems
   runDemo(initialLibraryService)
 
   /**
