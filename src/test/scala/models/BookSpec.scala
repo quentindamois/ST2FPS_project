@@ -3,6 +3,8 @@ package models
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 import java.time.LocalDate
+import utils.Id
+
 
 class BookSpec extends AnyFunSuite with Matchers {
 
