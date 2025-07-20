@@ -1,5 +1,5 @@
 
 
-object validationSerrvice {
+object ValidationService {
   
 }
