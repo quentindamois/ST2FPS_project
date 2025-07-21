@@ -27,9 +27,9 @@ object JsonUtil {
       (file: File) => safeLibConvertingToJson(lib).flatMap((jsonContent) => safeFileWriting(file, jsonContent))
     }
     safeFileOpening(pathToFile).flatMap(writeToFile) match {
-      case Left(errorOperation) if  errorOperation == ConversionError => Left("the library could not be converted in Json.")
-      case Left(errorOperation) if errorOperation == FileError.PathError => Left(s"$pathToFile cannot be reached")
-      case Left(errorOperation) if errorOperation == FileError.AuthorisationError => Left(s"$pathToFile cannot be edited.")
+      case Left(errorOperation) if  errorOperation.isInstanceOf[FileError.ConversionError] => Left("the library could not be converted in Json.")
+      case Left(errorOperation) if errorOperation.isInstanceOf[FileError.PathError] => Left(s"$pathToFile cannot be reached")
+      case Left(errorOperation) if errorOperation.isInstanceOf[FileError.AuthorisationError] => Left(s"$pathToFile cannot be edited.")
       case Right(result) => Right(result)
       case _ => Left("There is an issue when trying to save the library.")
     }
@@ -42,9 +42,9 @@ object JsonUtil {
     **/
   def LoadFromFile(pathToFile: String): Result[LibCatalog] = { //TODO: test the function LoadFromFile
     safeFileOpening(pathToFile).flatMap(safeFileReading).flatMap(safeJsonConvertingToLib) match {
-      case Left(errorOperation) if  errorOperation == FileError.ConversionError => Left("the json could not be converted in Library.")
-      case Left(errorOperation) if errorOperation == FileError.PathError => Left(s"$pathToFile cannot be reached")
-      case Left(errorOperation) if errorOperation == FileError.ReadingError => Left(s"$pathToFile cannot be read.")
+      case Left(errorOperation) if  errorOperation.isInstanceOf[FileError.ConversionError] => Left("the json could not be converted in Library.")
+      case Left(errorOperation) if errorOperation.isInstanceOf[FileError.PathError] => Left(s"$pathToFile cannot be reached")
+      case Left(errorOperation) if errorOperation.isInstanceOf[FileError.ReadingError] => Left(s"$pathToFile cannot be read.")
       case Right(result) => Right(result)
       case _ => Left("There is an issue when trying to load the library.")
     }
@@ -58,6 +58,9 @@ object JsonUtil {
   def safeFileOpening(pathToFile: String): fileOperationInnerResult[File] = {//TODO: test the function safeFileOpening
     try {
       val jsonFile = new File(pathToFile)
+      if (jsonFile.getParentFile != null && !jsonFile.getParentFile.exists()) {
+        jsonFile.getParentFile.mkdirs()
+      }
       Right(jsonFile)
     } catch {
       case _ => Left(FileError.PathError(pathToFile))
