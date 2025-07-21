@@ -63,5 +63,12 @@ case class Book(
       Left("All copy have been returned.")
     }
   }
+  /**
+   * Return the number of same author
+   *
+   * @param book a Book we compare with the book
+   * @return an Int corresponding to the amount of common author
+   * */
+  def hasNCommonAuthor(book: Book): Int = this.author.count(book.author.contains(_))
 }
 
