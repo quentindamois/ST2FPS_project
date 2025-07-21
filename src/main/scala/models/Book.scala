@@ -25,7 +25,7 @@ import utils.Id
 case class Book(
   id: Id,
   title: String,
-  author: String, //TODO: Change to a List[String]
+  author: List[String], //TODO: Change to a List[String]
   isbn: Id,
   publishedDate: LocalDate,
   genre: String,

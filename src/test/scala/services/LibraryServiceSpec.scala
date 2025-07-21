@@ -15,7 +15,7 @@ class LibraryServiceSpec extends AnyFunSuite with Matchers {
     val book = Book(
       id = Id(UUID.randomUUID().toString),
       title = "Test Book",
-      author = "Test Author",
+      author = List["Test Author"],
       isbn = Id("978-0-123456-78-9"),
       publishedDate = LocalDate.of(2023, 1, 1),
       genre = "Test",
@@ -54,7 +54,7 @@ class LibraryServiceSpec extends AnyFunSuite with Matchers {
     val book = Book(
       id = Id(UUID.randomUUID().toString),
       title = "Test Book",
-      author = "Test Author",
+      author = List["Test Author"],
       isbn = Id("978-0-123456-78-9"),
       publishedDate = LocalDate.of(2023, 1, 1),
       genre = "Test",

@@ -35,7 +35,7 @@ object Main extends App { //TODO: allow the user to test the program themselves
       Book(
         id = Id(UUID.randomUUID().toString),
         title = "Le Petit Prince",
-        author = "Antoine de Saint-Exupéry",
+        author = List[String]("Antoine de Saint-Exupéry"),
         isbn = Id("978-2-07-040848-4"),
         publishedDate = LocalDate.of(1943, 4, 6),
         genre = "Literature",
@@ -46,7 +46,7 @@ object Main extends App { //TODO: allow the user to test the program themselves
       Book(
         id = Id(UUID.randomUUID().toString),
         title = "1984",
-        author = "George Orwell",
+        author = List[String]("George Orwell"),
         isbn = Id("978-0-452-28423-4"),
         publishedDate = LocalDate.of(1949, 6, 8),
         genre = "Science-fiction",
@@ -57,7 +57,7 @@ object Main extends App { //TODO: allow the user to test the program themselves
       Book(
         id = Id(UUID.randomUUID().toString),
         title = "Scala Programming",
-        author = "Martin Odersky",
+        author = List[String]("Martin Odersky"),
         isbn = Id("978-0-981531-64-7"),
         publishedDate = LocalDate.of(2008, 1, 1),
         genre = "Informatics",

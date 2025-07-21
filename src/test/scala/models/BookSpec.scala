@@ -12,7 +12,7 @@ class BookSpec extends AnyFunSuite with Matchers {
     val book = Book(
       id = Id("1"),
       title = "Test Book",
-      author = "Test Author",
+      author = List[String]("Test Author"),
       isbn = Id("978-0-123456-78-9"),
       publishedDate = LocalDate.of(2023, 1, 1),
       genre = "Test",
@@ -33,7 +33,7 @@ class BookSpec extends AnyFunSuite with Matchers {
     val book = Book(
       id = Id("2"),
       title = "Test Book",
-      author = "Test Author",
+      author = List[String]("Test Author"),
       isbn = Id("978-0-123456-78-9"),
       publishedDate = LocalDate.of(2023, 1, 1),
       genre = "Test",
@@ -47,11 +47,11 @@ class BookSpec extends AnyFunSuite with Matchers {
     result shouldBe a[Left[_, _]]
   }
 
-  test("le retour d'un livre devrait augmenter les exemplaires disponibles") {
+  test("Returning a book should increase the number of copy available.") {
     val book = Book(
       id = Id("3"),
       title = "Test Book",
-      author = "Test Author",
+      author = List[String]("Test Author"),
       isbn = Id("978-0-123456-78-9"),
       publishedDate = LocalDate.of(2023, 1, 1),
       genre = "Test",

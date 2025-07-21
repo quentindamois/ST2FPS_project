@@ -56,13 +56,13 @@ case class LibCatalog (
     books.values.filter(_.title.toLowerCase.contains(title.toLowerCase)).toList
   }
   /**
-    * Filter the Map Books and return a list containing every Book inside the Map whose author's name contain the author's name given as an input
+    * Filter the Map Books and return a list containing every Book inside the Map who have at least one author in common with the 
     *
     * @param author a String used to filter the objects Book
     * @return A List[Book] containing the all the Books object that contain the name of the author inside their field author
     */
   def findBooksByAuthor(author: String): List[Book] = {
-    books.values.filter(_.author.toLowerCase.contains(author.toLowerCase)).toList
+    books.values.filter(_.author.map(oneAuthor => author.toLowerCase.toLowerCase.contains(oneAuthor.toLowerCase)).reduce(_ | _)).toList
   }
   /**
     * Filter the Map Books and return a list containing every Book inside the Map whose field genre contain the genre given as an input
