@@ -25,7 +25,7 @@ import utils.Id
 case class Book(
   id: Id,
   title: String,
-  author: String, //TODO: Change to a List[String]
+  author: List[String], //TODO: Change to a List[String]
   isbn: Id,
   publishedDate: LocalDate,
   genre: String,
@@ -63,5 +63,12 @@ case class Book(
       Left("All copy have been returned.")
     }
   }
+  /**
+   * Return the number of same author
+   *
+   * @param book a Book we compare with the book
+   * @return an Int corresponding to the amount of common author
+   * */
+  def hasNCommonAuthor(book: Book): Int = this.author.count(book.author.contains(_))
 }
 
