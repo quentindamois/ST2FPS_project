@@ -1,109 +1,109 @@
-# ST2FPS_project - Système de Gestion de Bibliothèque
+# ST2FPS_project - Library Management System
 
-Ce projet est un système de gestion de bibliothèque développé en Scala pour le cours de programmation fonctionnelle.
+This project is a library management system developed in Scala for the functional programming course.
 
-## Structure du projet
+## Project Structure
 
 ```
 library-management-system/
-├── build.sbt                    # Configuration SBT
+├── build.sbt                    # SBT Configuration
 ├── project/
-│   ├── build.properties        # Version SBT
-│   └── plugins.sbt            # Plugins SBT
+│   ├── build.properties        # SBT Version
+│   └── plugins.sbt            # SBT Plugins 
 ├── src/
 │   ├── main/
 │   │   └── scala/
-│   │       ├── models/         # Modèles de données
+│   │       ├── models/         # Data Models
 │   │       │   ├── Book.scala
 │   │       │   ├── User.scala
 │   │       │   ├── Transaction.scala
 │   │       │   └── Catalog.scala
-│   │       ├── services/       # Services métier
+│   │       ├── services/       # Business Services
 │   │       │   ├── LibraryService.scala
 │   │       │   ├── RecommendationService.scala
 │   │       │   └── ValidationService.scala
-│   │       ├── utils/          # Utilitaires
+│   │       ├── utils/          # Utility classes
 │   │       │   ├── JsonUtil.scala
 │   │       │   └── ErrorHandling.scala
-│   │       └── Main.scala      # Point d'entrée
+│   │       └── Main.scala      # Entry point
 │   └── test/
 │       └── scala/
 │           ├── models/
 │           │   └── BookSpec.scala
 │           └── services/
 │               └── LibraryServiceSpec.scala
-├── data/                       # Données JSON (généré)
+├── data/                       # JSON data (generated)
 ├── README.md
 └── .gitignore
 ```
 
-## Fonctionnalités
+## Features
 
-- **Gestion des livres** : Ajout, recherche par titre/auteur/genre
-- **Gestion des utilisateurs** : Inscription, types d'utilisateurs
-- **Système d'emprunt/retour** : Gestion des transactions avec dates d'échéance
-- **Recommandations** : Suggestions basées sur l'historique d'emprunt
-- **Validation** : Validation des données avec gestion d'erreurs
-- **Persistence** : Sauvegarde/chargement en JSON
+- **Book Management** : Add, search by title/author/genre
+- **User Management** : Registration, user types
+- **Borrow/return System** : Transaction handling with due dates
+- **Recommendations** : Suggestions based on borrowing history
+- **Validation** : Data validation with error handling
+- **Persistence** : Save/load data in JSON format
 
-## Prérequis
+## Prerequisites
 
-- Java 11 ou supérieur
+- Java 11 or higher
 - SBT (Scala Build Tool) 1.9.6
 
-## Installation et utilisation
+## Installation and Usage
 
-### Compiler le projet
+### Compile the project
 ```bash
 sbt compile
 ```
 
-### Exécuter l'application
+### Run the application
 ```bash
 sbt run
 ```
 
-### Exécuter les tests
+### Run the tests
 ```bash
 sbt test
 ```
 
-### Lancer le REPL Scala avec les classes du projet
+### Launch Scala REPL with project classes
 ```bash
 sbt console
 ```
 
-## Concepts de programmation fonctionnelle
+## Functional Programming Concepts
 
-Ce projet illustre plusieurs concepts clés :
+This project illustrates several key concepts:
 
-- **Immutabilité** : Toutes les structures de données sont immutables
-- **Fonctions pures** : Les fonctions n'ont pas d'effets de bord
-- **Either pour la gestion d'erreurs** : Gestion fonctionnelle des erreurs
-- **Case classes et pattern matching** : Modélisation de données
+- **Immutability** : All data structures are immutable
+- **Pure functions** : Functions have no side effects
+- **Either for error handling** : Functional error management
+- **Case classes and pattern matching** : Data modeling
 - **Higher-order functions** : Map, filter, fold, etc.
-- **Composition de fonctions** : Chaînage d'opérations
-- **Type safety** : Utilisation du système de types de Scala
+- **Function composition** : Chaining operations
+- **Type safety** : Leverage Scala's type system
 
 ## Architecture
 
-Le projet suit une architecture en couches :
+The project follows a layered architecture:
 
-1. **Modèles** (`models/`) : Définition des entités métier
-2. **Services** (`services/`) : Logique métier et orchestration
-3. **Utilitaires** (`utils/`) : Fonctions transversales
-4. **Main** : Point d'entrée et démonstration
+1. **Models** (`models/`) : Business entities definition
+2. **Services** (`services/`) : Business logic and orchestration
+3. **Utilities** (`utils/`) : Cross-cutting helper functions
+4. **Main** : Entry point and demonstration
 
-## Exemple d'utilisation
+## Example Usage
 
 ```scala
 import models.*
 import services.*
 
-// Créer un service de bibliothèque
+// Create a library service
 val libraryService = new LibraryService()
 
-// Ajouter un livre
+// Add a book
 val book = Book(
   id = "1",
   title = "Le Petit Prince",
@@ -117,7 +117,7 @@ val book = Book(
 
 libraryService.addBook(book)
 
-// Ajouter un utilisateur
+// Add a user
 val user = User(
   id = "1",
   firstName = "Marie",
@@ -129,6 +129,6 @@ val user = User(
 
 libraryService.addUser(user)
 
-// Emprunter un livre
+// Borrow a book
 libraryService.borrowBook(user.id, book.id)
 ```
