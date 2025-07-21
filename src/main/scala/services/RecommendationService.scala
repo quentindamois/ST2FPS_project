@@ -121,8 +121,8 @@ case class RecommendationService(libraryService: LibraryService) {
    * @return a string corresponding to the list genre the most common genre
    * */
   private def getPreferredAuthors(books: List[Book]): List[String] = {
-    books
-      .groupBy(_.author)
+    books.flatMap(book => book.author.map((_, book)))
+      .groupBy(_._1)
       .view
       .mapValues(_.length)
       .toList
@@ -161,8 +161,8 @@ case class RecommendationService(libraryService: LibraryService) {
     // Same genre = +0.5
     if (book1.genre == book2.genre) similarity += 0.5
 
-    // Same author = +0.3
-    if (book1.author == book2.author) similarity += 0.3
+    // One same author = 0.3
+    similarity += 0.3 * book1.hasNCommonAuthor(book2)
 
     // Year of publication = +0.2
     val yearDiff =
