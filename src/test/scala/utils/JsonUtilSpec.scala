@@ -17,7 +17,7 @@ class JsonUtilSpec extends AsyncFlatSpec with Matchers with BeforeAndAfter {
       Id("b1") -> Book(
         id = Id("b1"),
         title = "Scala Book",
-        author = "Maxence Kamionka", // À changer quand on aura une liste
+        author = List[String]("Maxence Kamionka"),
         isbn = Id("isbn1"),
         publishedDate = testDate,
         genre = "Programming",
