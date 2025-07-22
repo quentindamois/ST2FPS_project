@@ -88,6 +88,6 @@ object Book:
                  genre: String,
                  totalCopies: Int,
                  availableCopies: Int,
-                 description: Description = None): Result[Book] = (new Book(Id(id), title, author, Id(isbn), publishedDate, genre, totalCopies, totalCopies).validationBook())
+                 description: Description = None): Result[Book] = (Book(Id(id), title, author, Id(isbn), publishedDate, genre, totalCopies, totalCopies).validationBook())
 
 
