@@ -1,7 +1,7 @@
 package utils
 
 /**
- * An Opaque type used 
+ * An Opaque type used for id
  * */
 opaque type Id = String
 object Id:
