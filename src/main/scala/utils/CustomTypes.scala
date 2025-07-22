@@ -25,4 +25,8 @@ object CustomTypes {
    * A Map[Id, T] used for the field books and users from class LibCatalog.
    * */
   type LibraryMapIdTo[T] = Map[Id, T]
+  /**
+   * A List[(T => Boolean, String)] used to create list of requirement for validation
+   * */
+  type ListRequirements[T] = List[(T => Boolean, String)]
 }
