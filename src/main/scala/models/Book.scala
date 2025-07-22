@@ -1,12 +1,14 @@
 package models
 
 import java.time.LocalDate
-import upickle.default._
-import utils.JsonUtil._
+import upickle.default.*
+import utils.JsonUtil.*
 import utils.JsonUtil.ReaderWriterLocalDate
 import utils.JsonUtil.ReaderWriterID
-import utils.CustomTypes._
+import utils.CustomTypes.*
 import utils.Id
+import utils.ValidationUtil.validate
+import services.ValidationService.bookCondition
 
 /**
  * The class used to represent a book
@@ -70,5 +72,22 @@ case class Book(
    * @return an Int corresponding to the amount of common author
    * */
   def hasNCommonAuthor(book: Book): Int = this.author.count(book.author.contains(_))
+  /**
+   * Validate the field of an object Book.
+   * */
+  def validationBook(): Result[Book] = this.validate(bookCondition)
 }
+
+
+object Book:
+  def createBook(id: String,
+                 title: String,
+                 author: List[String],
+                 isbn: String,
+                 publishedDate: LocalDate,
+                 genre: String,
+                 totalCopies: Int,
+                 availableCopies: Int,
+                 description: Description = None): Result[Book] = (new Book(Id(id), title, author, Id(isbn), publishedDate, genre, totalCopies, totalCopies).validationBook())
+
 
