@@ -5,7 +5,7 @@ import utils.ErrorHandling.*
 object CustomTypes {
   //These types are use for field of function
   /**
-   * An Option[String] used for field description of the Object Bbook
+   * An Option[String] used for field description of the Object Book
    * */
   type Description = Option[String]
   //These are used to return content from function
