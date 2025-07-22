@@ -3,11 +3,16 @@ package models
 import java.time.LocalDate
 import io.circe.{Decoder, Encoder}
 import io.circe.generic.semiauto.*
+import models.UserType.{Faculty, Student}
 import upickle.default.*
 import utils.JsonUtil.ReaderWriterLocalDate
 import utils.JsonUtil.ReaderWriterID
 import utils.CustomTypes.*
 import utils.Id
+
+import java.time.LocalDate
+import utils.ValidationUtil.validate
+import services.ValidationService.userCondition
 
 import scala.annotation.targetName
 
@@ -74,6 +79,10 @@ case class User(
       Left("Ce livre n'est pas emprunté par cet utilisateur")
     }
   }
+  /**
+   * Validate the field of an object User.
+   * */
+  def validateUser(): Result[User] = this.validate(userCondition)
 }
 
 
