@@ -18,7 +18,7 @@ lazy val root = (project in file("."))
       "org.scalacheck" %% "scalacheck" % "1.17.0" % "test",
 
       // Logging
-      "ch.qos.logback" % "logback-classic" % "1.4.11",
+      "ch.qos.logback" % "logback-classic" % "1.4.12",
       "com.typesafe.scala-logging" %% "scala-logging" % "3.9.5",
 
       // Scala Test
