@@ -10,7 +10,7 @@ import java.util.UUID
 
 class LibraryServiceSpec extends AnyFunSuite with Matchers {
 
-  test("ajouter un livre au catalogue devrait réussir") {
+  test("A book should be able to be added to the library") {
     val libraryService = LibraryService()
     val book = Book(
       id = Id(UUID.randomUUID().toString),
@@ -30,7 +30,7 @@ class LibraryServiceSpec extends AnyFunSuite with Matchers {
     updatedService.getCatalog.getBook(book.id) shouldBe Some(book)
   }
 
-  test("ajouter un utilisateur devrait réussir") {
+  test("Adding a user should succeed") {
     val libraryService = LibraryService()
     val user = User(
       id = Id(UUID.randomUUID().toString),
@@ -48,7 +48,7 @@ class LibraryServiceSpec extends AnyFunSuite with Matchers {
     updatedService.getCatalog.getUser(user.id) shouldBe Some(user)
   }
 
-  test("emprunter un livre disponible devrait réussir") {
+  test("Borrowing an available book should succeed") {
     val initialService = LibraryService()
 
     val book = Book(

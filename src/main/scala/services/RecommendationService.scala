@@ -11,7 +11,7 @@ import utils.Id
   */
 case class RecommendationService(libraryService: LibraryService) {
   /**
-   * Recommend a list of book available book to a user based on the genre of the books previously borrowed by hte user
+   * Recommend a list of book available book to a user based on the genre of the books previously borrowed by the user
    *
    * @param userID an Id corresponding to the id of user we are recommanding book to
    * @param limit an Int corresponding to the number of book we are recommanding to the user
@@ -55,11 +55,11 @@ case class RecommendationService(libraryService: LibraryService) {
 
     val catalog = libraryService.getCatalog
     val availableBooks = catalog.availableBooks
-
     availableBooks
-      .filter(book => preferredAuthors.contains(book.author))
+      .filter(book => book.author.exists(preferredAuthors.contains))
       .filterNot(book => userBorrowHistory.map(_.id).contains(book.id))
       .take(limit)
+
   }
   /**
    * Get a list of Book that have the same genre or author as the id of the book given as an input
