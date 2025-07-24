@@ -2,14 +2,15 @@ package models
 
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import java.time.LocalDate
 import utils.Id
 
-class UserSpec extends AnyFunSuite with Matchers {
+class UserSpec extends AnyFunSuite with Matchers with ScalaCheckPropertyChecks {
 
-  val testUser = User(
+  val testUser: User = User(
     id = Id("1"),
-    firstName = "Théo",
+    firstName = "Theo",
     lastName = "Billionka",
     email = "theo.billionka@gmail.com",
     membershipDate = LocalDate.of(2024, 1, 1),
@@ -17,7 +18,7 @@ class UserSpec extends AnyFunSuite with Matchers {
   )
 
   test("User full name should be correctly formatted") {
-    testUser.fullName shouldBe "Jean Dupont"
+    testUser.fullName shouldBe "Theo Billionka"
   }
 
   test("New user should be able to borrow books") {
@@ -43,9 +44,8 @@ class UserSpec extends AnyFunSuite with Matchers {
   }
 
   test("User should not be able to borrow books when at limit") {
-    val user = testUser
     val books = (1 to 5).map(i => Id(s"book$i"))
-    val userWithMaxBooks = books.foldLeft(user) { (u, bookId) =>
+    val userWithMaxBooks = books.foldLeft(testUser) { (u, bookId) =>
       u.borrowBook(bookId).getOrElse(u)
     }
 
@@ -108,5 +108,45 @@ class UserSpec extends AnyFunSuite with Matchers {
     val userAfterReturn = userWithBooks.returnBook(book1).getOrElse(userWithBooks)
 
     userAfterReturn.borrowedBooks should contain only book2
+  }
+  
+  test("Borrowing should never exceed maxBorrowLimit") {
+    forAll { (ids: List[String]) =>
+      val uniqueIds = ids.distinct.take(10) // éviter doublons
+      val userAfterBorrows = uniqueIds.foldLeft(testUser) { (user, rawId) =>
+        user.borrowBook(Id(rawId)).getOrElse(user)
+      }
+      userAfterBorrows.borrowedBooks.length should be <= testUser.maxBorrowLimit
+    }
+  }
+
+  test("Returning a borrowed book should reduce borrowedBooks size by 1") {
+    forAll { (bookId: String) =>
+      whenever(bookId.nonEmpty) {
+        val borrowed = testUser.borrowBook(Id(bookId)).getOrElse(testUser)
+        val returned = borrowed.returnBook(Id(bookId)).getOrElse(borrowed)
+        returned.borrowedBooks.size shouldBe borrowed.borrowedBooks.size - 1
+      }
+    }
+  }
+
+  test("Borrow then return a book should restore initial state") {
+    forAll { (bookId: String) =>
+      whenever(bookId.nonEmpty) {
+        val borrowed = testUser.borrowBook(Id(bookId)).getOrElse(testUser)
+        val restored = borrowed.returnBook(Id(bookId)).getOrElse(borrowed)
+        restored.borrowedBooks shouldBe empty
+      }
+    }
+  }
+
+  test("Borrowing same book twice should always fail second time") {
+    forAll { (bookId: String) =>
+      whenever(bookId.nonEmpty) {
+        val userWithBook = testUser.borrowBook(Id(bookId)).getOrElse(testUser)
+        val secondAttempt = userWithBook.borrowBook(Id(bookId))
+        secondAttempt shouldBe a[Left[_, _]]
+      }
+    }
   }
 }
