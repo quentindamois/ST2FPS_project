@@ -6,6 +6,7 @@ import utils.{Id, JsonUtil}
 
 import java.time.LocalDate
 import java.util.UUID
+import scala.io.StdIn.readLine
 
 /**
   * Main application used the application
@@ -14,16 +15,30 @@ object Main extends App { //TODO: allow the user to test the program themselves
 
   println("=== Management system of the Library ===")
   println("Welcome to the management system of the library")
-
+  println("To enter command enter 1 to run a demo enter 2")
+  print(">")
+  var valueEntered: String = readLine()
+  while (valueEntered != "1" & valueEntered != "2") {
+    println("To enter command enter 1 to run a demo enter 2")
+    print(">")
+    valueEntered = readLine()
+  }
   // Initialisation of the service services (immutables)
-  val initialLibraryService = LibraryService()
-  val initialRecommendationService = RecommendationService(
-    initialLibraryService
-  )
+  valueEntered match {
+    case "1" => {
+      ManualControl.mainLoop()
+    }
+    case "2" => {
+      val initialLibraryService = LibraryService()
+      val initialRecommendationService = RecommendationService(
+        initialLibraryService
+      )
 
-  // Demonstration of the systems
-  runDemo(initialLibraryService)
 
+      // Demonstration of the systems
+      runDemo(initialLibraryService)
+    }
+  }
   /**
    * This function is used to a Demo showing the programming function
    * */
