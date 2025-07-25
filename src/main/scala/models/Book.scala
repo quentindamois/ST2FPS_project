@@ -80,6 +80,18 @@ case class Book(
 
 
 object Book:
+  /**
+   * A wrapped function for the constructor of Book
+   *
+   * @param id String the id of the book
+   * @param title String the title of the book
+   * @param isbn String corresponding to the isbn of the book
+   * @param publishedDate a localDate corresponding to the date of pucblication of the book
+   * @param genre a string corresponding to the genre of the book
+   * @param totalCopies the total number of copies
+   * @param description the description of the book
+   * @return a Book object
+   * */
   def createBook(id: String,
                  title: String,
                  author: List[String],
