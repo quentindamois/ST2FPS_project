@@ -29,4 +29,8 @@ object CustomTypes {
    * A List[(T => Boolean, String)] used to create list of requirement for validation
    * */
   type ListRequirements[T] = List[(T => Boolean, String)]
+  /**
+   * An Either[UserError, T] used for the function inside the package JsonUtil
+   * */
+  type UserInputResult[T] = Either[UserError, T]
 }
