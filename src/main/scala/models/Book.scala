@@ -9,7 +9,6 @@ import utils.CustomTypes.*
 import utils.Id
 import utils.ValidationUtil.validate
 import services.ValidationService.bookCondition
-import utils.ValidationUtil.validateString
 
 /**
  * The class used to represent a book
