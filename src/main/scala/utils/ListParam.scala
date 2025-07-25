@@ -7,9 +7,26 @@ import utils.CustomTypes.Result
 // especially the answer from the user Miles Sabin
 
 
-
+/**
+ * Class used to create a List of value to be given to a curried function
+ * 
+ * @constructor the basic constructor of the class
+ * @param head the first element of the ListParam
+ * @param tail the rest of the ListParam corresponding to a nested ListParam
+ * */
 case class ListParam[H, T](head: H, tail: T):
+  /**
+   * Add an element to the ListParam
+   *
+   * @param newHead a new value to be added to the list
+   * @return an Updated ListParam with the new value at the beginning
+   * */
   def append[newT](newHead: newT): ListParam[newT, ListParam[H, T]] = ListParam(newHead, this)
+  /**
+   * Transform the ListParam to a String
+   * 
+   * @return the value converted in a String
+   * */
   def toSting[H2, T1]: String = {
     val headString: String = this.head.toString
     val tailString: String = this.tail match {
@@ -18,6 +35,12 @@ case class ListParam[H, T](head: H, tail: T):
     }
     headString + tailString
   }
+  /**
+   * Recursively give the value of the ListParam to a curried function
+   * 
+   * @param functionApplied the function applied
+   * @return the final result of the function
+   * */
   def foldFromHead[H, T, H2, T2](fonctionApplied :H => Any): Any = {
     this.tail match {
       case Nil => {
@@ -38,6 +61,12 @@ case class ListParam[H, T](head: H, tail: T):
   }
 
 object ListParam:
+  /**
+   * Constructor to create a list with on element
+   * 
+   * @param head the first element of the new ListParam
+   * @return a ListParam with one value
+   * */
   def apply[F](head: F): ListParam[F, List[Nothing]] = ListParam(head, Nil)
   def fromList[H, T](listValue: List[Any]): ListParam[H, T] = {
     val resultListParam: ListParam[H, T]  = listValue match {
@@ -73,11 +102,3 @@ object ListParam:
   }
 
 
-@main def tentative(): Unit = {
-  val test = List(2, "a")
-  val curriedSum: Int => String => String = x => y => x.toString + y
-  val second = ListParam.fromList(test.reverse)
-  val result = second.foldFromHead(curriedSum)
-  println(result)
-  println(second)
-}
