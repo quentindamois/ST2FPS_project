@@ -5,7 +5,7 @@ import utils.ErrorHandling.*
 object CustomTypes {
   //These types are use for field of function
   /**
-   * An Option[String] used for field description of the Object Bbook
+   * An Option[String] used for field description of the Object Book
    * */
   type Description = Option[String]
   //These are used to return content from function
@@ -25,4 +25,12 @@ object CustomTypes {
    * A Map[Id, T] used for the field books and users from class LibCatalog.
    * */
   type LibraryMapIdTo[T] = Map[Id, T]
+  /**
+   * A List[(T => Boolean, String)] used to create list of requirement for validation
+   * */
+  type ListRequirements[T] = List[(T => Boolean, String)]
+  /**
+   * An Either[UserError, T] used for the function inside the package JsonUtil
+   * */
+  type UserInputResult[T] = Either[UserError, T]
 }

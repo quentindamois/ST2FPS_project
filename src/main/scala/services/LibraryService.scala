@@ -29,6 +29,17 @@ case class LibraryService(private val catalog: LibCatalog = Catalog.empty) {
     }
   }
   /**
+   * This Function remove book.
+   * @param Id the id of the book
+   * @return an updated library without the book
+   * */
+  def removeBook(bookId: Id): LibraryResult[LibraryService] = try {
+    val newCatalog = catalog.removeBook(bookId)
+    Right(this.copy(catalog = newCatalog))
+  } catch {
+    case _ => Left(LibraryError.BookNotFound(bookId))
+  }
+  /**
    * Search the list of book base for a title, author's name or genre
    * 
    * @param query a String corresponding to the title, author's name or genre we are searching
@@ -63,6 +74,12 @@ case class LibraryService(private val catalog: LibCatalog = Catalog.empty) {
     }
   }
 
+  def removeUser(userId: Id): LibraryResult[LibraryService] = try {
+      val newCatalog = catalog.removeUser(userId)
+      Right(this.copy(catalog = newCatalog))
+  } catch {
+    case _ => Left(LibraryError.UserNotFound(userId))
+  }
   // Borrow and Return Operation
   /**
    * Update the library's catalog to borrow a book
@@ -187,6 +204,14 @@ case class LibraryService(private val catalog: LibCatalog = Catalog.empty) {
       } yield (user, book, transaction)
     }
     Right(result)
+ 
+  }
+  def displayStatistic(): Unit = {
+    println("\n--- Statistic ---")
+    println(s"Total number of book: ${this.catalog.totalBooks}")
+    println(s"total number of user: ${this.catalog.totalUsers}")
+    println(s"Total number of transaction (both borrowing and returning): ${this.catalog.totalTransactions}")
+    println(s"Available books: ${this.catalog.availableBooks.length}")
   }
 }
 /**

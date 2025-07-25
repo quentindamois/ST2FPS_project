@@ -3,11 +3,16 @@ package models
 import java.time.LocalDate
 import io.circe.{Decoder, Encoder}
 import io.circe.generic.semiauto.*
+import models.UserType.{Faculty, Student}
 import upickle.default.*
 import utils.JsonUtil.ReaderWriterLocalDate
 import utils.JsonUtil.ReaderWriterID
 import utils.CustomTypes.*
 import utils.Id
+
+import java.time.LocalDate
+import utils.ValidationUtil.validate
+import services.ValidationService.userCondition
 
 import scala.annotation.targetName
 
@@ -74,6 +79,10 @@ case class User(
       Left("Ce livre n'est pas emprunté par cet utilisateur")
     }
   }
+  /**
+   * Validate the field of an object User.
+   * */
+  def validateUser(): Result[User] = this.validate(userCondition)
 }
 
 
@@ -84,3 +93,53 @@ enum UserType derives ReadWriter {
   case Student, Faculty, External
 }
 
+object User:
+  /**
+   * Constructor for User with the value UserType.Student in the field userType.
+   * 
+   * @constructor constructor for a User with the value UserType.Student in the field userType.
+   * @param id an Id corresponding to the id of the user
+   * @param firstName a String corresponding to the firstname of the user
+   * @param lastName a String corresponding to the lastname of the user
+   * @param membershipDate a LocalDate corresponding to the date of creation of the user
+   * @return a User object with the field userType containing UserType.Student and the field maxBorrowLimit set at 5
+   * */
+  def createStudent(id: String,
+                    firstName: String,
+                    lastName: String,
+                    email: String,
+                    membershipDate: LocalDate = LocalDate.now(),
+                    borrowedBooks: List[Id] = List.empty): Result[User] = (User(Id(id), firstName, lastName, email, membershipDate, Student, borrowedBooks).validateUser())
+  /**
+   * Constructor for User with the value UserType.Faculty in the field userType.
+   *
+   * @constructor constructor for a User with the value UserType.Faculty in the field userType.
+   * @param id             an Id corresponding to the id of the user
+   * @param firstName      a String corresponding to the firstname of the user
+   * @param lastName       a String corresponding to the lastname of the user
+   * @param membershipDate a LocalDate corresponding to the date of creation of the user
+   * @return a User object with the field userType containing UserType.Faculty and the field maxBorrowLimit set at 10
+   * */
+  def createFaculty(id: String,
+                    firstName: String,
+                    lastName: String,
+                    email: String,
+                    membershipDate: LocalDate = LocalDate.now(),
+                    borrowedBooks: List[Id] = List.empty): Result[User] = (User(Id(id), firstName, lastName, email, membershipDate, Faculty, borrowedBooks, 10).validateUser())
+
+  /**
+   * Constructor for User with the value UserType.External in the field userType.
+   *
+   * @constructor constructor for a User with the value UserType.External in the field userType.
+   * @param id             an Id corresponding to the id of the user
+   * @param firstName      a String corresponding to the firstname of the user
+   * @param lastName       a String corresponding to the lastname of the user
+   * @param membershipDate a LocalDate corresponding to the date of creation of the user
+   * @return a User object with the field userType containing UserType.External and the field maxBorrowLimit set at 3
+   * */
+  def createExternal(id: String,
+                    firstName: String,
+                    lastName: String,
+                    email: String,
+                    membershipDate: LocalDate = LocalDate.now(),
+                    borrowedBooks: List[Id] = List.empty): Result[User] = (User(Id(id), firstName, lastName, email, membershipDate, UserType.External, borrowedBooks, 3).validateUser())

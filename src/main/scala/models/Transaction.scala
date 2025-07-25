@@ -6,6 +6,8 @@ import utils.JsonUtil.*
 import utils.JsonUtil.ReaderWriterLocalDate
 import utils.CustomTypes.*
 import utils.Id
+import utils.ValidationUtil.validate
+import services.ValidationService.transactionCondition
 
 /**
  * Represent a transaction (Borrowing/Return) in the Library
@@ -60,6 +62,10 @@ case class Transaction(
       case _ => 0.0
     }
   }
+  /**
+   * Validate the field of an object Transaction.
+   * */
+  def validateTransaction(): Result[Transaction] = this.validate(transactionCondition)
 }
 
 /**
