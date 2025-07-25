@@ -9,9 +9,9 @@ import java.util.UUID
 import scala.io.StdIn.readLine
 
 /**
-  * Main application used the application
+  * The Main application, it has to be executed to use the code
   */
-object Main extends App { //TODO: allow the user to test the program themselves
+object Main extends App {
 
   println("=== Management system of the Library ===")
   println("Welcome to the management system of the library")
