@@ -9,6 +9,7 @@ import utils.CustomTypes.*
 import utils.Id
 import utils.ValidationUtil.validate
 import services.ValidationService.bookCondition
+import utils.ValidationUtil.validateString
 
 /**
  * The class used to represent a book
@@ -87,7 +88,6 @@ object Book:
                  publishedDate: LocalDate,
                  genre: String,
                  totalCopies: Int,
-                 availableCopies: Int,
                  description: Description = None): Result[Book] = (Book(Id(id), title, author, Id(isbn), publishedDate, genre, totalCopies, totalCopies).validationBook())
 
 
