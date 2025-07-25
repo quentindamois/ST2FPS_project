@@ -30,20 +30,4 @@ object ValidationUtil {
     case fusedError if fusedError.nonEmpty => Left(fusedError.reduce(concatWithBackSlash))
     case _ =>       Right(value)
   }
-  extension [T](value: T) def validateString(conditionsAndConsequences: List[(T => Boolean, String)]): T | String = conditionsAndConsequences
-    .map(_.check(value))
-    .filter(_.isDefined)
-    .map(_.get)
-    .reduce(concatWithBackSlash) match {
-    case fusedError if fusedError.nonEmpty => fusedError
-    case _ => value
-  }
-  extension [T](value: T) def getAllError(conditionsAndConsequences: List[(T => Boolean, String)]): Result[Boolean] = conditionsAndConsequences
-    .map(_.check(value))
-    .filter(_.isDefined)
-    .map(_.get)
-    .reduce(concatWithBackSlash) match {
-    case fusedError if fusedError.nonEmpty => Left(fusedError)
-    case _ => Right(true)
-  }
 }

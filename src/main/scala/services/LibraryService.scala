@@ -216,7 +216,7 @@ case class LibraryService(private val catalog: LibCatalog = Catalog.empty) {
    *
    * */
   def displayStatistic(): Unit = {
-    println("\n--- Statistic ---")
+    println("--- Statistic ---")
     println(s"Total number of book: ${this.catalog.totalBooks}")
     println(s"total number of user: ${this.catalog.totalUsers}")
     println(s"Total number of transaction (both borrowing and returning): ${this.catalog.totalTransactions}")

@@ -28,7 +28,6 @@ import scala.annotation.targetName
  * @param userType a UserType indicating ig the
  * @param borrowedBooks a List[Id] corresponding to the list of id of the Book the user has borrowed
  */
-
 case class User(
   id: Id,
   firstName: String,

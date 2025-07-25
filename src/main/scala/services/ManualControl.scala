@@ -8,6 +8,7 @@ import upickle.core.BufferedValue.True
 import utils.JsonUtil.*
 import utils.CustomTypes.*
 import utils.ErrorHandling.{FileError, LibraryError}
+import utils.Id.convertListAnyToId
 import utils.{Id, JsonUtil, ListParam}
 import utils.UserInput.{buildBook, buildUser, getInput}
 
@@ -79,7 +80,7 @@ object ManualControl {
    * */
   private val mapListParameter = List(
     "search title" -> List(("title", "String")),
-    "search author" -> List(("author", "List[String]")),
+    "search author" -> List(("author", "String")),
     "search genre" -> List(("genre", "String")),
     "filter availability" -> List[(String, String)](),
     "add user" -> List(("firstName", "String"), ("lastName", "String"), ("email", "String"), ("userType", "UserType")),
@@ -92,12 +93,6 @@ object ManualControl {
     "get recommendation" -> List(("email", "String")),
     "quit" -> List[(String, String)]()
   ).toMap
-
-  def convertListAnyToId(listValue: List[(String, Any)]): Result[List[(String, Id)]] = try {
-    Right(listValue.map((tupleFieldValue) => (tupleFieldValue._1, Id(s"${tupleFieldValue._2}"))))
-  } catch {
-    case _ => Left("A value could not be converted to Id.")
-  }
   /**
    * A map used to get the chain of function to execute to perform the action selected by the user
    * */
@@ -151,7 +146,7 @@ object ManualControl {
     val result = listParam.foldFromHead(curriedFunction) match {
       case errorMessage: String => Left(errorMessage)
       case success: T => Right(success)
-      case _ => Left("The constructor returned an unexpected type.")
+      case _ => Left("The function returned an unexpected type.")
     }
     result
   } catch {

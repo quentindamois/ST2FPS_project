@@ -1,5 +1,7 @@
 package utils
 
+import utils.CustomTypes.Result
+
 /**
  * An Opaque type used for id
  * */
@@ -13,7 +15,6 @@ object Id:
    *
    * */
   def apply(strId: String): Id = strId
-  extension (id: Id) def strId: String = id
   /**
    * Transform an Id to a String
    * 

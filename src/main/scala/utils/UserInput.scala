@@ -49,7 +49,7 @@ object UserInput {
     ("Integer", (nameType: String) => ask(nameType, s"The format of $nameType is NNN with corresponding to a number.", (inputString: String) => inputString.convertToInteger)),
     ("Description", (nameType: String) => ask(nameType, s"The format of $nameType is a normal String if you want to enter a desription or just press enter if you don't want to enter a description.", (inputString: String) => inputString.convertToDescription)),
     ("List[String]", inputList(_)),
-    ("UserType", (nameType: String) => ask(nameType, s"For $nameType:\n - For a student enter 1.\n - For a faculty member enter 2.\n - For a external member enter 2.", (inputString: String) => inputString.convertToUserType))
+    ("UserType", (nameType: String) => ask(nameType, s"For $nameType:\n - For a student enter 1.\n - For a faculty member enter 2.\n - For a external member enter 3.", (inputString: String) => inputString.convertToUserType))
   ).toMap
   /**
    * Ask the user a list of String
@@ -88,30 +88,6 @@ object UserInput {
         }
       }
       case _ => listNameAuthor
-    }
-
-  }
-  /**
-   * Find the id of a user based on it email address.
-   * @param emailResearch a String corresponding to the user's email address
-   * @return the id of the user
-   * */
-  extension(libCat: LibCatalog) def findIdOfUser(emailResearch: String): Result[Id] = try {
-    val resultId = libCat.users.values.filter((user) => user.email.equals(emailResearch)).head.id
-    Right(resultId)
-  } catch {
-    case _ => Left("Id of User could not be found.")
-  }
-  end extension
-  def askFor(fieldAndType: (String, String), convert: String => Any): UserInputResult[(String, Any)] = {
-    val nameOfField = fieldAndType._1
-    val typeOfField = fieldAndType._2
-    println(s"Enter the $typeOfField for $nameOfField")
-    try {
-      val returnValue = convert(nameOfField)
-      Right((nameOfField, returnValue))
-    } catch {
-      case _ => Left(UserError.convertTypeError(nameOfField, typeOfField))
     }
   }
   /**
@@ -233,7 +209,6 @@ object UserInput {
    * Take list of value correponding
    * */
   def buildBook(listParameter: List[(String, Any)]): Result[Book] =  try {
-    println(s"the result of listParameter : $listParameter")
     val startingCurriedBuilder: String => List[String] => String => LocalDate => String => Int => Description => String | Book = title => author => isbn => publishedDate => genre => totalCopies => description => wrapperResult(createBook(UUID.randomUUID().toString,
       title,
       author,
@@ -246,7 +221,6 @@ object UserInput {
     )
     val listOnlyValue = listParameter.map(_._2)
     val listParam = ListParam.fromList(listOnlyValue.reverse)
-    println(s"The value of type ListParam $listParam")
     val result = listParam.foldFromHead(startingCurriedBuilder) match {
       case errorMessage: String => Left(errorMessage)
       case book:Book => Right(book)
