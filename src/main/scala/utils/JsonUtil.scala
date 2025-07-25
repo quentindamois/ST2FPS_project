@@ -40,7 +40,7 @@ object JsonUtil {
     * @param pathToFile a String corresponding the path to the file from where we are loading the library
     * @return an Either[String, libCatalog] hat contain on the left a message about the error encountered and on the right the LibCatalog successfully loaded
     **/
-  def LoadFromFile(pathToFile: String): Result[LibCatalog] = { //TODO: test the function LoadFromFile
+  def LoadFromFile(pathToFile: String): Result[LibCatalog] = {
     safeFileOpening(pathToFile).flatMap(safeFileReading).flatMap(safeJsonConvertingToLib) match {
       case Left(errorOperation) if  errorOperation.isInstanceOf[FileError.ConversionError] => Left("the json could not be converted in Library.")
       case Left(errorOperation) if errorOperation.isInstanceOf[FileError.PathError] => Left(s"$pathToFile cannot be reached")
@@ -55,7 +55,7 @@ object JsonUtil {
     * @param pathToFile a String corresponding the path to the file we are opening
     * @return an Either[FileError, File] that contain on the left an error if opening the file failed and on the right the File successfully opened.
     */
-  def safeFileOpening(pathToFile: String): fileOperationInnerResult[File] = {//TODO: test the function safeFileOpening
+  def safeFileOpening(pathToFile: String): fileOperationInnerResult[File] = {
     try {
       val jsonFile = new File(pathToFile)
       if (jsonFile.getParentFile != null && !jsonFile.getParentFile.exists()) {
@@ -73,7 +73,7 @@ object JsonUtil {
     * @param JsonContent a String corresponding the json we are saving in the file.
     * @return an Either that contain on the left an error if writing in the file failed and a String containing a success message.
     */
-  def safeFileWriting(file: File, jsonContent: String): fileOperationInnerResult[String] = { //TODO: test the function safeFileWriting
+  def safeFileWriting(file: File, jsonContent: String): fileOperationInnerResult[String] = { 
     try {
       val fileWriter = new FileWriter(file)
       fileWriter.write(jsonContent)
@@ -90,7 +90,7 @@ object JsonUtil {
     * @param fileName a File object that correspond to the file we are getting the content
     * @return an Either[FileError, String] that contain on the left an error if opening the file failed and on the right the content of the file.
     */
-  def safeFileReading(fileName: File): fileOperationInnerResult[String] = { //TODO: test the function safeFileReading
+  def safeFileReading(fileName: File): fileOperationInnerResult[String] = { 
     try {
       val FileReader = scala.io.Source.fromFile(fileName)
       val content = FileReader.getLines().mkString
@@ -106,7 +106,7 @@ object JsonUtil {
     * @param lib a LibCatalog object that we are serializing
     * @return an Either[FileError, String] that contain on the left an error if opening serializing the object failed and on the right the String successfully serialized           
     */
-  def safeLibConvertingToJson(lib: LibCatalog): fileOperationInnerResult[String] = { //TODO: test the function safeLibConverting
+  def safeLibConvertingToJson(lib: LibCatalog): fileOperationInnerResult[String] = {
     try {
       val jsonContent = upickle.default.write(lib)
       Right(jsonContent)
@@ -121,7 +121,7 @@ object JsonUtil {
     * @param jsonContent a String we are deserializing
     * @return an Either[FileError, LibCatalog] that contain on the left an error if opening serializing the object failed and on the right the object successfully deserialized           
     */
-  def safeJsonConvertingToLib(jsonContent: String): fileOperationInnerResult[LibCatalog] = { //TODO: test the tfunction safeJsonConvertingToLib
+  def safeJsonConvertingToLib(jsonContent: String): fileOperationInnerResult[LibCatalog] = {
     try {
       val lib = upickle.default.read[LibCatalog](jsonContent)
       Right(lib)

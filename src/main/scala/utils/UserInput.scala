@@ -53,7 +53,7 @@ object UserInput {
   ).toMap
   /**
    * Ask the user a list of String
-   * 
+   *
    * @param textInput a String corresponding to the name of the filed
    * @return an UserInputResult which is an Either that either on the left a UserInput error and on the right the List[String] which is the list of Name of the author
    * */
@@ -69,7 +69,7 @@ object UserInput {
   }
   /**
    * Ask the user to enter an element for one element of the list of string recursively.
-   * 
+   *
    * @param numberElement an Int corresponding to the number of the value currently being entered.
    * @param field a String corresponding to the name of the parameter given
    * @param listNameAuthor a List[String] containing the list of name of the author
@@ -92,7 +92,7 @@ object UserInput {
   }
   /**
    * This function is used to get the error message of a UserInputResultIfIt exist
-   * 
+   *
    * @param res a Either UserInputResult[T] containing on the left a UserError and on the right a value T
    * @return A String corresponding to the error message if the UserInputResult or an empty String if the String is not empty
    * */
@@ -175,7 +175,7 @@ object UserInput {
    * @param listFieldValue a List[(String, Any)] a list of the field it corresponds to and the value associated to it
    * @param libCatalog the library's catalog we are looking to
    * */
-  def getID(listFieldValue: List[(String, Any)], libCatalog: LibCatalog): Result[List[(String, Any)]] = {//TODO: a tester
+  def getID(listFieldValue: List[(String, Any)], libCatalog: LibCatalog): Result[List[(String, Any)]] = {
     val mapToId = List(("isbn", (fieldAndISBN: (String, Any)) =>  libCatalog.getIdFromISBNTuple(fieldAndISBN)), ("email", (fieldAndEmail: (String, Any)) => libCatalog.getIdFromEmailTuple(fieldAndEmail))).toMap
     val processedList = listFieldValue.map((tupleFieldAndValue: (String, Any)) => mapToId.getOrElse(tupleFieldAndValue._1, defaulfReplaceSearch)(tupleFieldAndValue))
     val listErrorMessage = processedList.map(_.getErrorMessageIfExistFromResult).filter(_.nonEmpty)
@@ -189,7 +189,7 @@ object UserInput {
    *
    * @param listParameter a List[
    * */
-  def buildUser(listParameter: List[(String, Any)]): Result[User] = try {//TODO: a tester
+  def buildUser(listParameter: List[(String, Any)]): Result[User] = try {
     val typeUser = listParameter.toMap.getOrElse("userType", "error")
     typeUser match {
       case error if error == "error" => Left("No type was specified.")
@@ -233,7 +233,7 @@ object UserInput {
   }
   /**
    * Ask the user for a type that is not a String
-   * 
+   *
    * @param nameField a String corresponding to the name of the field
    * @param precision a String corresponding to precision about the format of the type to enter
    * */
@@ -245,7 +245,7 @@ object UserInput {
   }
   /**
    * Transform a string to a LocalDate
-   * 
+   *
    * @return a UserInputResult[LocalDate] which contain a LocalDate on the right and UserError on the left.
    * */
   extension (str: String) def convertToLocalDate: UserInputResult[LocalDate] = try {
@@ -256,7 +256,7 @@ object UserInput {
   }
   /**
    * transform a String to double
-   * 
+   *
    * @return a UserInputResult[Double] which contain a Double on the right and UserError on the left.
    * */
   extension (str: String) def convertToDouble: UserInputResult[Double] = try {
@@ -266,7 +266,7 @@ object UserInput {
   }
   /**
    * Convert a string to integer.
-   * 
+   *
    * @return a UserInputResult[Integer] which contain an Integer on the right and UserError on the left.
    * */
   extension (str: String) def convertToInteger: UserInputResult[Integer] = try {
@@ -276,7 +276,7 @@ object UserInput {
   }
   /**
    * Convert a string to Description
-   * 
+   *
    * @return a UserInputResult[Description] which contain a Description on the right and UserError on the left.
    * */
   extension (str: String) def convertToDescription: UserInputResult[Description] = try {
@@ -286,7 +286,7 @@ object UserInput {
   }
   /**
    * Convert a String to a UserType
-   * 
+   *
    * @return a UserInputResult[UserType] which contain an UserType on the right and UserError on the left.
    * */
   extension (str: String) def convertToUserType: UserInputResult[UserType] = try {
