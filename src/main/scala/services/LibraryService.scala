@@ -73,7 +73,12 @@ case class LibraryService(private val catalog: LibCatalog = Catalog.empty) {
       Right(this.copy(catalog = newCatalog))
     }
   }
-
+  /**
+   * Remove a User from the Map of user of the library
+   * 
+   * @param userId an Id corresponding to the user that we are going to delete
+   * @return a new LibraryService without the object User
+   * */
   def removeUser(userId: Id): LibraryResult[LibraryService] = try {
       val newCatalog = catalog.removeUser(userId)
       Right(this.copy(catalog = newCatalog))
@@ -206,6 +211,10 @@ case class LibraryService(private val catalog: LibCatalog = Catalog.empty) {
     Right(result)
  
   }
+  /**
+   * Display statistic of the LibCatalog
+   *
+   * */
   def displayStatistic(): Unit = {
     println("\n--- Statistic ---")
     println(s"Total number of book: ${this.catalog.totalBooks}")

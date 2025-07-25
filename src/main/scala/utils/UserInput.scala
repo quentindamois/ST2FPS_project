@@ -40,7 +40,10 @@ object UserInput {
   } catch {
     case _ => Left(UserError.convertTypeError(input._2, s" type of " + input._1))
   }
-  val mapToConvert = List(
+  /**
+   * A map used to select the method to ask the user for a value and convert it to the wright format
+   * */
+  private val mapToConvert = List(
     ("LocalDate", (nameType: String) => ask(nameType, s"The format of $nameType is YYYY-MM-DD", (inputString: String) => inputString.convertToLocalDate)),
     ("Double", (nameType: String) => ask(nameType, s"The format of $nameType is NNN.NNN with corresponding to a number.", (inputString: String) => inputString.convertToDouble)),
     ("Integer", (nameType: String) => ask(nameType, s"The format of $nameType is NNN with corresponding to a number.", (inputString: String) => inputString.convertToInteger)),
@@ -50,7 +53,9 @@ object UserInput {
   ).toMap
   /**
    * Ask the user a list of String
+   * 
    * @param textInput a String corresponding to the name of the filed
+   * @return an UserInputResult which is an Either that either on the left a UserInput error and on the right the List[String] which is the list of Name of the author
    * */
   def inputList(textInput: String): UserInputResult[List[String]] =  try {
     val maxNumberAuthor = 8
@@ -63,9 +68,13 @@ object UserInput {
     }
   }
   /**
-   * Ask the user to enter an element for one element of the list of string.
+   * Ask the user to enter an element for one element of the list of string recursively.
+   * 
    * @param numberElement an Int corresponding to the number of the value currently being entered.
-   * @return a String corresponding to the value entered by the user
+   * @param field a String corresponding to the name of the parameter given
+   * @param listNameAuthor a List[String] containing the list of name of the author
+   * @param maxDepth an Int corresponding to the maximum amount of recursion
+   * @return a List[String] corresponding to the list of name of author entered by the user
    * */
   def askElement(field: String, listNameAuthor: List[String], numberElement: Int, maxDepth: Int): List[String] = {
     numberElement match {
@@ -77,7 +86,6 @@ object UserInput {
           case quitEntered if quitEntered.equals("quit") => listNameAuthor
           case _ => askElement(field, nameAuthor :: listNameAuthor, numberElement + 1, maxDepth)
         }
-
       }
       case _ => listNameAuthor
     }
@@ -108,16 +116,14 @@ object UserInput {
   }
   /**
    * This function is used to get the error message of a UserInputResultIfIt exist
+   * 
+   * @param res a Either UserInputResult[T] containing on the left a UserError and on the right a value T
+   * @return A String corresponding to the error message if the UserInputResult or an empty String if the String is not empty
    * */
   extension [T](res: UserInputResult[T]) def getErrorMessageIfExist: String = res match {
   case Right(_) => ""
   case Left(error) => error.message
   }
-  /**
-   * The default valiue used to ask for a value to the user
-   *
-   * @param nameField a String corresponding to the value of the field we are asking about, it used to choose when we are running the function.
-   * */
   /**
    * This method is used to create to ask for all the value for all the parameter needed to run the value.
    *
@@ -253,6 +259,7 @@ object UserInput {
   }
   /**
    * Ask the user for a type that is not a String
+   * 
    * @param nameField a String corresponding to the name of the field
    * @param precision a String corresponding to precision about the format of the type to enter
    * */
@@ -264,6 +271,8 @@ object UserInput {
   }
   /**
    * Transform a string to a LocalDate
+   * 
+   * @return a UserInputResult[LocalDate] which contain a LocalDate on the right and UserError on the left.
    * */
   extension (str: String) def convertToLocalDate: UserInputResult[LocalDate] = try {
     val result: LocalDate = LocalDate.parse(str)
@@ -273,6 +282,8 @@ object UserInput {
   }
   /**
    * transform a String to double
+   * 
+   * @return a UserInputResult[Double] which contain a Double on the right and UserError on the left.
    * */
   extension (str: String) def convertToDouble: UserInputResult[Double] = try {
     Right(str.toDouble)
@@ -281,6 +292,8 @@ object UserInput {
   }
   /**
    * Convert a string to integer.
+   * 
+   * @return a UserInputResult[Integer] which contain an Integer on the right and UserError on the left.
    * */
   extension (str: String) def convertToInteger: UserInputResult[Integer] = try {
     Right(str.toInt)
@@ -289,6 +302,8 @@ object UserInput {
   }
   /**
    * Convert a string to Description
+   * 
+   * @return a UserInputResult[Description] which contain a Description on the right and UserError on the left.
    * */
   extension (str: String) def convertToDescription: UserInputResult[Description] = try {
     Right(Option[String](str))
@@ -297,6 +312,8 @@ object UserInput {
   }
   /**
    * Convert a String to a UserType
+   * 
+   * @return a UserInputResult[UserType] which contain an UserType on the right and UserError on the left.
    * */
   extension (str: String) def convertToUserType: UserInputResult[UserType] = try {
     str match {
@@ -310,7 +327,7 @@ object UserInput {
         Right(UserType.Faculty)
       }
       case _ => {
-        println("no User Type Indentified")
+        println("no User Type Identified")
         Left(UserError.convertTypeError("String", "UserType"))
       }
     }

@@ -9,6 +9,10 @@ import java.time.{LocalDate, LocalDateTime}
 import java.time.format.DateTimeFormatter
 import java.time.LocalDate
 
+
+/**
+ * Comprised of function and valued to verify value.
+ * */
 object ValidationService {
   /**
    * The list of requirement for validation of a book.
@@ -81,6 +85,9 @@ object ValidationService {
   )
   /**
    * This function check to see if the String can be converted in a value LocalDate
+   * 
+   * @param str the String we want to see if we can convert to the type LocalDate
+   * @return A boolean true if the string can be converted and false if it cannot
    * */
   extension(str: String) def isLocalDate: Boolean = try {
     LocalDate.parse(str)
@@ -90,6 +97,9 @@ object ValidationService {
   }
   /**
    * this function validate to see if a String can be converted to Double
+   * 
+   * @param str the String we want to see if we can convert to the type Double
+   * @return A boolean true if the string can be converted and false if it cannot          
    * */
   extension(str: String) def isDouble: Boolean = try {
     str.toDouble
@@ -99,6 +109,9 @@ object ValidationService {
   }
   /**
    * This function validate to see if a String can be converted to LocalDate.
+   * 
+   * @param str the String we want to see if we can convert to the type Int
+   * @return A boolean true if the string can be converted and false if it cannot
    * */
   extension(str: String) def isInteger: Boolean = try {
     str.toInt

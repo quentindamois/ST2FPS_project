@@ -174,5 +174,10 @@ case class LibCatalog (
 }
 
 object Catalog {
+  /**
+   * Create an empty LibCatalog.
+   * 
+   * @return a empty object LibCatalog
+   * */
   def empty: LibCatalog = LibCatalog()
 }

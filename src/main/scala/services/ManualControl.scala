@@ -16,9 +16,14 @@ import scala.concurrent.{Future, blocking}
 import utils.ValidationUtil.validate
 import utils.UserInput.getID
 
+
+/**
+ * Used to allow the user to choose which operation to run
+ * */
 object ManualControl {
   /**
    * Initialise the main loop
+   *
    * @param pathFile a String corresponding to the file where the library catalog is stored
    * @return Return a Library's catalog, if the loading succeed it return the load library's catalog if did not work it return a new instance
    * */
@@ -29,6 +34,12 @@ object ManualControl {
       }
       case Right(catalog) => catalog
     }
+  /**
+   * Save the catalog library to a local file, it display an error or succes message
+   *
+   * @param libService LibraryService whose libCatalog we want to save in the Json format
+   * @param pathFile a String corresponding to the path of file we are going to save the file to.
+   * */
   def saveLib(libService: LibraryService, pathFile: String): Unit = {
     JsonUtil.saveToFile(libService.getCatalog,
       pathFile
@@ -37,6 +48,12 @@ object ManualControl {
       case Left(errorMessage) => println(s"[ERROR] $errorMessage")
     }
   }
+  /**
+   * A wrapper used to transform a value with the type T to Result[T]
+   *
+   * @param value a Type T value we want to transform to Result[T]
+   * @return a Result[T] which correspond to the right side of Either[String, T]
+   * */
   def emptyFunct[T](value: T):Result[T] = Right(value)
   def verifyNonemptnyness[T](list: List[T]): Result[List[T]] = try {
     list match {
@@ -47,11 +64,20 @@ object ManualControl {
   } catch {
     case _ => Left("An error occured when looking at the length of a list.")
   }
+  /**
+   * Get the first Element of tuple contained inside of the Right of the Either Result, the Either has a value on the left side then we jus
+   *
+   * @param result a Result[(T1, T2)] whose first element of the on the right side we want to get
+   * @result
+   * */
   def getFirstElement[T1, T2](result: Result[(T1, T2)]): Result[T1] = result match {
     case Right(tupleContent) => Right(tupleContent._1)
     case Left(error) => Left(error)
   }
-  val mapListParameter = List(
+  /**
+   * A map used to get the list of parameter and the value associated to each parameter.
+   * */
+  private val mapListParameter = List(
     "search title" -> List(("title", "String")),
     "search author" -> List(("author", "List[String]")),
     "search genre" -> List(("genre", "String")),
@@ -72,7 +98,10 @@ object ManualControl {
   } catch {
     case _ => Left("A value could not be converted to Id.")
   }
-  val mapListChainFunction = List(
+  /**
+   * A map used to get the chain of function to execute to perform the action selected by the user
+   * */
+  private val mapListChainFunction = List(
     "search title" -> ((listField:List[(String, String)], libraryService: LibraryService) => getInput(listField).flatMap((listFieldValue: List[(String, Any)]) => executeFonctionWithList(listFieldValue, (query: String) =>  wrapperEither(libraryService.searchBooks(query, Title), (error:LibraryError) => error.message)))),
     "search author" -> ((listField:List[(String, String)], libraryService: LibraryService) => getInput(listField).flatMap((listFieldValue: List[(String, Any)]) => executeFonctionWithList(listFieldValue, (query: String) =>  wrapperEither(libraryService.searchBooks(query, Author), (error:LibraryError) => error.message)))),
     "search genre" -> ((listField:List[(String, String)], libraryService: LibraryService) => getInput(listField).flatMap((listFieldValue: List[(String, Any)]) => executeFonctionWithList(listFieldValue, (query: String) =>  wrapperEither(libraryService.searchBooks(query, Genre), (error:LibraryError) => error.message)))),
@@ -93,7 +122,10 @@ object ManualControl {
           (listValueForParameter: List[(String, Id)]) => executeFonctionWithList(listValueForParameter, (idUser: Id) => wrapperEither(verifyNonemptnyness(recommandationService.recommendBooksByGenre(idUser, 3)), (error: String) => error)))
         })
   ).toMap
-  val mapResultChain = List(
+  /**
+   * A Map used to determine the function to used to processed the result of the action select by the user
+   * */
+  private val mapResultChain = List(
     "search title" -> ((resultFunction: Result[List[Book]]) => executedFunctionWithDisplay(resultFunction, (foundBooks:List[Book]) => foundBooks.map(_.title).mkString(", "))),
     "search author" -> ((resultFunction: Result[List[Book]]) => executedFunctionWithDisplay(resultFunction, (foundBooks:List[Book]) => foundBooks.map(_.title).mkString(", "))),
     "search genre" -> ((resultFunction: Result[List[Book]]) => executedFunctionWithDisplay(resultFunction, (foundBooks:List[Book]) => foundBooks.map(_.title).mkString(", "))),
@@ -106,6 +138,13 @@ object ManualControl {
     "remove user" -> ((resultFunction: Result[LibraryService], libraryService: LibraryService) => executedFunctionUpdateLibraryService(resultFunction, (result) => "User removed", (str:String) => str, libraryService)),
     "get recommendation" -> ((result: Result[List[Book]]) => executedFunctionWithDisplay(result, (foundBooks:List[Book]) => foundBooks.map(_.title).mkString(", ")))
   ).toMap
+  /**
+   * Give the element of List to a curried function
+   *
+   * @param ListAllValue a List of tuple (String, Any) with Any being the value corresponding to the value of we will give to the curried function
+   * @param curriedFunction a curried function to which we will give the value of the list to.
+   * @return the result of the function
+   * */
   def executeFonctionWithList[S, T](listAllValue: List[(String, Any)], curriedFunction: S => Any): Result[T] = try {
     val listOnlyValue = listAllValue.map(_._2)
     val listParam = ListParam.fromList(listOnlyValue.reverse)
@@ -118,10 +157,25 @@ object ManualControl {
   } catch {
     case _ => Left("The wrong parameter where given to the function")
   }
+  /**
+   * Transform an Either[F, S] to a ADT S | String
+   *
+   * @param resuiltEither an Either[F, S] we want to transform to S | String
+   * @param extractErrorMessage a function that take the value on the left side
+   * */
   def wrapperEither[F,S](resultEither: Either[F, S], extractErrorMessage: F => String): S | String = resultEither match {
     case Left(error) => extractErrorMessage(error)
     case Right(success) => success
   }
+  /**
+   * Get an Either and display it.
+   *
+   * @param executedFunction a Either[E, T] corresponding the result of the function selected by the user.
+   * @param getInfoSuccess fonction used the process the Right side of the Either
+   * @param getInfoFailure used to process the Left side of the Either
+   * @param messageFailure the String displayed before the process Left side of the Either
+   * @param messageSuccess the String displayed before the processed Right side of the Either
+   * */
   def executedFunctionWithDisplay[E, T](executedFunction: Either[E , T], getInfoSuccess: T => String, getInfoFailure: E => String = (str:String) => str, messageSuccess: String = "result", messageFailure: String = "error message"): Unit ={
     executedFunction match {
       case Right(success) => {
@@ -132,6 +186,18 @@ object ManualControl {
       }
     }
   }
+  /**
+   * Get an Either, display it and return the value on the right side or display the left side and a default value.
+   * This function is used to received the result of Either updating the object LibraryService
+   *
+   * @param executedFunction an Either[E, T] corresponding the result of the function selected by the user.
+   * @param getInfoSuccess fonction used the process the Right side of the Either
+   * @param getInfoFailure used to process the Left side of the Either
+   * @param messageFailure the String displayed before the process Left side of the Either
+   * @param messageSuccess the String displayed before the processed Right side of the Either
+   * @param libService a LibraryService returned if the Either contain the left value
+   * @return a LibraryService returned if the Eithter is on the Right side we return the updated value, if it is on the Left side we return the value libservice which correspond to that LibraryService before the update.
+   * */
   def executedFunctionUpdateLibraryService[E](executedFunction: Either[E, LibraryService], getInfoSuccess: LibraryService => String, getInfoFailure: E => String, libService: LibraryService, messageSuccess: String = "result", messageFailure: String = "error message"): LibraryService = {
     executedFunction match {
       case Right(success) => {
@@ -144,6 +210,9 @@ object ManualControl {
       }
     }
   }
+  /**
+   * Used for for the loop to allow the user to choose which operation to run.
+   * */
   def mainLoop(): Unit = try {
     var loop: Boolean = true
     var libCatalog = initLib("./data/catalog.json")
